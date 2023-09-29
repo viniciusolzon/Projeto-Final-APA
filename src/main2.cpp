@@ -147,7 +147,6 @@ Solucao CVRP :: construcao(Data *d){
     Solucao atual; // cria uma solucao vazia
 
 
-
     return atual
 }
 
