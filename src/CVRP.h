@@ -2,16 +2,7 @@
 #define CVRP_H
 
 #include "Data.h"
-#include <chrono>
-
-class Solucao{
-    private:
-        vector<vector<int>> rotas; // vector de vector de rotas, cada vector vai conter uma rota
-        double custo; // custo total da solucao
-   
-    public:
-        void info();
-};
+#include "Solucao.h"
 
 // Capacitaded Vehicle Routing Problem
 class CVRP{
@@ -25,11 +16,15 @@ class CVRP{
         CVRP(Data dados){this->dados = dados;} // Construtor da classe
         ~CVRP(){} // Destrutor da classe
 
-        Solucao construcao(Data *d); // A heurística construtiva utilizada será a do 'Vizinho mais pŕoximo'
-        int vizinhoMaisProximo();
+        // Funções para a heurística construtiva da solução
+        Solucao Construcao(Data *dados); // A heurística construtiva utilizada será a do 'Vizinho mais pŕoximo'
+        int vizinhoMaisProximo(int atual, Solucao *solucao, Data *dados, int capacidadeAtual);
+
+        // Funções para a busca local
+        // void BuscaLocal(Data *dados);
 
         void solve();
-        void show_solution();
+        void exibe_solucao();
 };
 
 #endif

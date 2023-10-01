@@ -6,9 +6,9 @@ CPPC = g++
 #############################
 
 #### opcoes de compilacao e includes
-CCOPT = $(BITS_OPTION) -O3 -fPIC -fexceptions -DNDEBUG -DIL_STD -std=c++0x
-#CCOPT = $(BITS_OPTION) -g -fPIC -fexceptions -DNDEBUG -DIL_STD -std=c++0x
+CCOPT = $(BITS_OPTION) -Ofast
 CONCERTINCDIR = $(CONCERTDIR)/include
+CCFLAGS = $(CCOPT)
 #############################
 
 #### flags do linker
@@ -25,10 +25,9 @@ OBJS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
 #############################
 
 #### regra principal, gera o executavel
-scheduler.exe: $(OBJS) 
+cvrp: $(OBJS) 
 	@echo  "\033[31m \nLinking all objects files: \033[0m"
-	#$(CPPC) $(BITS_OPTION) $(OBJS) -g -o $@ $(CCLNFLAGS)
-	$(CPPC) $(BITS_OPTION) $(OBJS) -g -o $@ $(CCLNFLAGS)
+	$(CPPC) $(BITS_OPTION) $(OBJS) -o $@ $(CCLNFLAGS)
 ############################
 
 #inclui os arquivos de dependencias
@@ -38,17 +37,16 @@ scheduler.exe: $(OBJS)
 #cada arquivo objeto depende do .c e dos headers (informacao dos header esta no arquivo de dependencias gerado pelo compiler)
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@echo  "\033[31m \nCompiling $<: \033[0m"
-	$(CPPC) $(CCFLAGS) $(CCOPT) -c $< -o $@
+	$(CPPC) $(CCFLAGS) -c $< -o $@
 	@echo  "\033[32m \ncreating $< dependency file: \033[0m"
 	$(CPPC) -std=c++0x  -MM $< > $(basename $@).d
 	@mv -f $(basename $@).d $(basename $@).d.tmp #proximas tres linhas colocam o diretorio no arquivo de dependencias (g++ nao coloca, surprisingly!)
 	@sed -e 's|.*:|$(basename $@).o:|' < $(basename $@).d.tmp > $(basename $@).d
 	@rm -f $(basename $@).d.tmp
 
-#delete objetos e arquivos de dependencia
 clean:
 	@echo "\033[31mcleaning obj directory \033[0m"
-	@rm scheduler.exe -f $(OBJDIR)/*.o $(OBJDIR)/*.d
+	@rm cvrp -f $(OBJDIR)/*.o $(OBJDIR)/*.d
 
 
-rebuild: clean scheduler.exe
+rebuild: clean cvrp

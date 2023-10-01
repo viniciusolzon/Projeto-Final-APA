@@ -9,8 +9,8 @@ class Cliente{
         bool atendido = false;
 
     public:
-        // Cliente(int demanda, int custoTerceirizacao, bool atendido); // Construtor
-        // ~Cliente(); // Destrutor
+        Cliente(int demanda, int custs_terceirizacao); // Construtor
+        ~Cliente(){} // Destrutor
 
         // Métodos gets e sets para os atributos da classe Cliente
         int get_demanda(){
@@ -27,7 +27,7 @@ class Cliente{
             this->custoTerceirizacao = c;
         }
 
-        bool foiAtendido(){
+        bool get_atendido(){
             return this->atendido;
         }
         void set_atendido(bool a){
@@ -35,4 +35,4 @@ class Cliente{
         }
 };
 
-#ENDIF
+#endif
