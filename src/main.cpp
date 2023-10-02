@@ -14,9 +14,7 @@ int main(int argc, char *argv[]){
     // dados.info();
 
     CVRP problema(dados);
-    // cout << "ANTES DO problema.solve();\n";
     problema.solve();
-    problema.exibe_solucao();
-    // cout << "DEPOIS DO problema.solve();\n";
+    // problema.exibe_solucao();
 
 }

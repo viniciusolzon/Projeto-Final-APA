@@ -11,18 +11,20 @@ using namespace std;
 
 class Solucao{
     private:
-        vector<vector<int>> rotas; // vector de vector de rotas, cada vector vai conter uma rota
-        vector<Cliente> clientes;
         double custo; // custo total da solucao
-   
+        vector<Cliente*> clientes;
+        vector<vector<int>> rotas; // vector de vector de rotas, cada vector vai conter uma rota
     public:
         Solucao(vector<int> demandas, vector<int> custos_terceirizacao, int k);
         Solucao(){}
         ~Solucao(){}
 
-        vector<Cliente> get_clientes(){return clientes;}
+        vector<Cliente*> get_clientes(){return clientes;}
         vector<vector<int>> get_rotas(){return rotas;}
+        void insereNaRota(int rota, int vertice);
+
         int get_custo(){return custo;}
+        void atualiza_custo(int valor){this->custo = valor;}
 
         void info();
 };

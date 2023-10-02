@@ -9,7 +9,7 @@ class Cliente{
         bool atendido = false;
 
     public:
-        Cliente(int demanda, int custs_terceirizacao); // Construtor
+        Cliente(int demanda, int custo_terceirizacao); // Construtor
         ~Cliente(){} // Destrutor
 
         // Métodos gets e sets para os atributos da classe Cliente
