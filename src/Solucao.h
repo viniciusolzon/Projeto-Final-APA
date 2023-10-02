@@ -22,6 +22,7 @@ class Solucao{
         vector<Cliente*> get_clientes(){return clientes;}
         vector<vector<int>> get_rotas(){return rotas;}
         void insereNaRota(int rota, int vertice);
+        void atualizaRota(int rota, int index, int vertice);
 
         int get_custo(){return custo;}
         void atualiza_custo(int valor){this->custo = valor;}

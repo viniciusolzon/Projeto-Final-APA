@@ -13,12 +13,20 @@ Solucao :: Solucao(vector<int> demandas, vector<int> custos_terceirizacao, int k
     // Inicializa as rotas
     vector<vector<int>> rotas_zeradas(k);
     this->rotas = rotas_zeradas;
+
+    // Coloca o 0 no começo pq ele sai do depósito
+    for(int i = 0; i < rotas_zeradas.size(); i++){
+        this->rotas[i].push_back(0);
+    }
 }
 
 void Solucao :: insereNaRota(int rota, int vertice){
     this->rotas[rota].push_back(vertice);
 }
 
+void Solucao :: atualizaRota(int rota, int index, int novo_vertice){
+    this->rotas[rota][index] = novo_vertice;
+}
 
 void Solucao::info(){
     // Rotas

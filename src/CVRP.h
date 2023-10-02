@@ -17,16 +17,22 @@ class CVRP{
         ~CVRP(){} // Destrutor da classe
 
         // Funções para a heurística construtiva da solução
-        Solucao Construcao(Data *dados); // A heurística construtiva utilizada será a do 'Vizinho mais pŕoximo'
-        int vizinhoMaisProximo(int atual, Solucao *solucao, Data *dados, int capacidadeAtual);
+        Solucao Construcao(Data *d); // A heurística construtiva utilizada será a do 'vizinho mais pŕoximo'
+        int vizinhoMaisProximo(int atual, Solucao *solucao, Data *d, int capacidadeAtual);
         int calcularCapacidadeUsada(vector<int> &rota, vector<Cliente*> clientes);
         void calcularCustoTotal(Solucao *s, Data d);
 
         // Funções para a busca local
-        // void BuscaLocal(Data *dados);
+        double epsilon(double a, double b);
+        bool melhorou(double valor1, double valor2);
+        void BuscaLocal(Solucao *s, Data *d);
+        int calculaCustoSwap(Solucao *s, Data *d, int rota, int cliente1, int cliente2);
+        bool melhorouSwap(Solucao *s, Data *d);
+
+        // int calculaCustoShift(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2);
+        // bool melhorouShift(Solucao *s, Data *d);
 
         void solve();
-        void exibe_solucao();
 };
 
 #endif

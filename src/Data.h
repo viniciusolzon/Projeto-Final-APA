@@ -7,6 +7,7 @@
 #include <string>
 #include <chrono>
 #include <iomanip>
+#include <cmath>
 
 using namespace std;
 

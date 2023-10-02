@@ -7,7 +7,7 @@ Solucao CVRP::Construcao(Data *dados){
     int veiculoAtual = 1;
     int qtd_veiculos = dados->get_k();
     for(int veiculoAtual = 1; veiculoAtual <= qtd_veiculos; veiculoAtual++){
-    //while(veiculoAtual <= qtd_veiculos ||
+    // while(veiculoAtual <= qtd_veiculos ||
     //            calcularCapacidadeUsada(solucao_atual.get_rotas().back(), solucao_atual.get_clientes()) != 0){
         // if(veiculoAtual > qtd_veiculos)
         //     break;
@@ -42,6 +42,9 @@ Solucao CVRP::Construcao(Data *dados){
                 break;  // Se não houver cliente próximo, o veículo retorna ao depósito
             }
         }
+
+        // Coloca o 0 no final pq ele volta pro depósito
+        solucao_atual.insereNaRota(veiculoAtual-1, 0);
 
         // Precisa disso?
         // if(veiculoAtual+1 > dados->get_k()){
