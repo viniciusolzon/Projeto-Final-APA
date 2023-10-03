@@ -1,6 +1,6 @@
 #include "Solucao.h"
 
-Solucao :: Solucao(vector<int> demandas, vector<int> custos_terceirizacao, int k){
+Solucao::Solucao(vector<int> demandas, vector<int> custos_terceirizacao, int k){
     int INT_MAX = std::numeric_limits<int>::max();
 
     this->custo = INT_MAX;
@@ -20,11 +20,11 @@ Solucao :: Solucao(vector<int> demandas, vector<int> custos_terceirizacao, int k
     }
 }
 
-void Solucao :: insereNaRota(int rota, int vertice){
+void Solucao::insereNaRota(int rota, int vertice){
     this->rotas[rota].push_back(vertice);
 }
 
-void Solucao :: atualizaRota(int rota, int index, int novo_vertice){
+void Solucao::atualizaRota(int rota, int index, int novo_vertice){
     this->rotas[rota][index] = novo_vertice;
 }
 

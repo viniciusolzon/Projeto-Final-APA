@@ -6,11 +6,27 @@ void CVRP::solve(){
     srand(time(NULL)); // Para conseguir gerar números aleatórios
     Solucao melhor_de_todas(dados.get_demandas(), dados.get_custos_terceirizacao(), dados.get_k()); // Cria a solução que guardará a melhor solução possível
 
-
+    cout << endl;
+    cout << endl;
+    cout << "Entrou na construcao";
+    cout << endl;
+    cout << endl;
     melhor_de_todas = Construcao(&dados); // Cria a solução atual
+    cout << endl;
+    cout << "Saiu da construcao";
+    cout << endl;
+    cout << endl;
     melhor_de_todas.info();
 
-    BuscaLocal(&melhor_de_todas, &dados); // Tenta melhorar o máximo possível a solução
+    cout << endl;
+    cout << endl;
+    cout << "Entrou na busca local";
+    cout << endl;
+    cout << endl;BuscaLocal(&melhor_de_todas, &dados); // Tenta melhorar o máximo possível a solução
+    cout << endl;
+    cout << "Saiu da busca local";
+    cout << endl;
+    cout << endl;
     melhor_de_todas.info();
 
     auto end = std::chrono::high_resolution_clock::now(); // Para o cronômetro
