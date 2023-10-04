@@ -7,11 +7,6 @@ Solucao CVRP::Construcao(Data *dados){
     int veiculoAtual = 1;
     int qtd_veiculos = dados->get_k();
     for(int veiculoAtual = 1; veiculoAtual <= qtd_veiculos; veiculoAtual++){
-    // while(veiculoAtual <= qtd_veiculos ||
-    //            calcularCapacidadeUsada(solucao_atual.get_rotas().back(), solucao_atual.get_clientes()) != 0){
-        // if(veiculoAtual > qtd_veiculos)
-        //     break;
-
         cout << "Construindo rota para o veículo " << veiculoAtual << endl;
         int capacidadeAtual = dados->get_Q();
         int atual = 0;
@@ -25,10 +20,16 @@ Solucao CVRP::Construcao(Data *dados){
                     
                     solucao_atual.get_clientes()[proximo - 1]->set_atendido(true);
 
-                    cout << "   Capacidade atual do veículo: " << capacidadeAtual << endl << endl;
+                    cout << "   Capacidade atual do veículo: " << capacidadeAtual << endl;
                     capacidadeAtual -= solucao_atual.get_clientes()[proximo -1]->get_demanda();
                 
+                    // Ao inserir o cliente na rota já podemos calcular o custo dele aqui
+                    // Pra não precisar iterar sobre todos os clientes e calcular esse custo dps
                     solucao_atual.insereNaRota(veiculoAtual-1, proximo);
+                    // Calcula o custo do cliente
+                    cout << "   Custo da solucao aumenta de  " << solucao_atual.get_custo();
+                    cout << " para " << solucao_atual.get_custo()+ dados->get_custo(atual, proximo) << endl << endl;
+                    solucao_atual.atualiza_custo(solucao_atual.get_custo() + dados->get_custo(atual, proximo));
 
                     atual = proximo;
                 }
@@ -46,13 +47,18 @@ Solucao CVRP::Construcao(Data *dados){
         // Coloca o 0 no final pq ele volta pro depósito
         solucao_atual.insereNaRota(veiculoAtual-1, 0);
 
+        cout << "   Ao voltar pro depósito o custo da solucao aumenta de  " << solucao_atual.get_custo();
+        cout << " para " << solucao_atual.get_custo()+ dados->get_custo(atual, 0) << endl << endl;
+        solucao_atual.atualiza_custo(solucao_atual.get_custo() + dados->get_custo(atual, 0));
+
         // Precisa disso?
         // if(veiculoAtual+1 > dados->get_k()){
         //     solucao_atual.get_rotas().push_back({});
         // }
     }
     
-    calcularCustoTotal(&solucao_atual, *dados);
+    // Não precisa mais calcular o custo da rota aqui pq ele ta sendo calculado dentro da construção
+    // calcularCustoTotal(&solucao_atual, *dados);
     return solucao_atual;
 }
 

@@ -119,6 +119,14 @@ bool CVRP::melhorouSwap(Solucao *s, Data *d){
     return houve_melhora;
 }
 
+int CVRP::calculaCustoShift(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2){
+
+}
+
+bool CVRP::melhorouShift(Solucao *s, Data *d){
+    
+}
+
 
 void CVRP::BuscaLocal(Solucao *s, Data *d){
     if(melhorouSwap(s, d))

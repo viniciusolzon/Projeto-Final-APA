@@ -29,8 +29,8 @@ class CVRP{
         int calculaCustoSwap(Solucao *s, Data *d, int rota, int cliente1, int cliente2);
         bool melhorouSwap(Solucao *s, Data *d);
 
-        // int calculaCustoShift(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2);
-        // bool melhorouShift(Solucao *s, Data *d);
+        int calculaCustoShift(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2);
+        bool melhorouShift(Solucao *s, Data *d);
 
         void solve();
 };

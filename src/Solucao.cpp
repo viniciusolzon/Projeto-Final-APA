@@ -1,9 +1,8 @@
 #include "Solucao.h"
 
 Solucao::Solucao(vector<int> demandas, vector<int> custos_terceirizacao, int k){
-    int INT_MAX = std::numeric_limits<int>::max();
 
-    this->custo = INT_MAX;
+    this->custo = 0;
     // Inicializa os clientes
     for(int i = 0; i < demandas.size(); i++){
         Cliente *novo_cliente = new Cliente(demandas[i], custos_terceirizacao[i]);
