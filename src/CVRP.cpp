@@ -4,7 +4,7 @@ void CVRP::solve(){
     auto start = std::chrono::high_resolution_clock::now(); // Inicia o cronômetro
 
     srand(time(NULL)); // Para conseguir gerar números aleatórios
-    Solucao melhor_de_todas(dados.get_demandas(), dados.get_custos_terceirizacao(), dados.get_k()); // Cria a solução que guardará a melhor solução possível
+    Solucao melhor_de_todas(dados.get_Q(), dados.get_demandas(), dados.get_custos_terceirizacao(), dados.get_k()); // Cria a solução que guardará a melhor solução possível
 
     cout << endl;
     cout << endl;

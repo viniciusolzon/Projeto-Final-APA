@@ -1,12 +1,13 @@
 #include "CVRP.h"
 
 Solucao CVRP::Construcao(Data *dados){
-    Solucao solucao_atual(dados->get_demandas(), dados->get_custos_terceirizacao(), dados->get_k()); // cria uma solucao inicial
+    Solucao solucao_atual(dados->get_Q(), dados->get_demandas(), dados->get_custos_terceirizacao(), dados->get_k()); // cria uma solucao inicial
 
     // Constrói as rotas iniciais para cada veículo.
     int veiculoAtual = 1;
     int qtd_veiculos = dados->get_k();
     int veiculo_usado = 0;
+
     for(int veiculoAtual = 1; veiculoAtual <= qtd_veiculos; veiculoAtual++){
         int veiculo_usado = 0;
         // cout << "Construindo rota para o veículo " << veiculoAtual << endl;
@@ -29,7 +30,10 @@ Solucao CVRP::Construcao(Data *dados){
                 
                     // Ao inserir o cliente na rota já podemos calcular o custo dele aqui
                     // Pra não precisar iterar sobre todos os clientes e calcular esse custo dps
-                    solucao_atual.insereNaRota(veiculoAtual-1, proximo);
+                    solucao_atual.pushBack(veiculoAtual-1, proximo);
+                    
+                    solucao_atual.atualizaCapacidade(veiculoAtual-1, capacidadeAtual);
+                    
                     // Calcula o custo do cliente
                     solucao_atual.atualiza_custo(solucao_atual.get_custo() + dados->get_custo(atual, proximo));
 
@@ -47,7 +51,7 @@ Solucao CVRP::Construcao(Data *dados){
         }
 
         // Coloca o 0 no final pq ele volta pro depósito
-        solucao_atual.insereNaRota(veiculoAtual-1, 0);
+        solucao_atual.pushBack(veiculoAtual-1, 0);
         solucao_atual.atualiza_custo(solucao_atual.get_custo() + dados->get_custo(atual, 0));
 
         // Se a rota do veiculo atual possui mais de um vértice nela (já começa com o 0 que é o depósito)
@@ -56,7 +60,7 @@ Solucao CVRP::Construcao(Data *dados){
         // Soma o custo de uso de um veiculo
         solucao_atual.atualiza_custo(solucao_atual.get_custo() + (veiculo_usado * dados->get_r()));
     }
-    
+
     // Não precisa mais calcular o custo da rota aqui pq ele ta sendo calculado dentro da construção
     // calcularCustoTotal(&solucao_atual, *dados);
     return solucao_atual;
@@ -69,10 +73,8 @@ int CVRP::vizinhoMaisProximo(int atual, Solucao *solucao, Data *dados, int capac
     int minCusto = INT_MAX;
     int mais_proximo = 0; // Inicializa o índice do cliente mais próximo como 0.
 
-
     // Percorre todos os clientes para encontrar o mais próximo.
     for (int i = 1; i <= solucao->get_clientes().size(); i++){
-        
         // Pra não pegar a distância dele com ele mesmo, sempre vai ser a menor (0)
         if(i == atual)
             continue;

@@ -15,6 +15,5 @@ int main(int argc, char *argv[]){
 
     CVRP problema(dados);
     problema.solve();
-    // problema.exibe_solucao();
 
 }
