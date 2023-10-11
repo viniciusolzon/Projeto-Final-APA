@@ -50,6 +50,7 @@ bool CVRP::melhorouReinsertion(Solucao *s, Data *d){
 
     int qtd_rotas = s->get_rotas().size();
     int tamanho_da_rota = 0;
+    bool houve_melhora = false;
     // Precisamos de uma rota com no mínimo 2 clientes para tentar fazer a reinserção
     for(int rota_escolhida = 0; rota_escolhida < qtd_rotas; rota_escolhida++){
         // cout << "Verificando reisertion na rota: " << rota_escolhida+1 << endl;
@@ -106,11 +107,14 @@ bool CVRP::melhorouReinsertion(Solucao *s, Data *d){
             
             // Se houve alguma melhora em qualquer rota retornamos que houve uma melhora na solução
             cout << "Houve melhora no reinsertion" << endl;
-            return true;
+            houve_melhora = true;
         }
     }
-    cout << "Nao houve melhora no reinsertion" << endl;
-    return false;
+    
+    if(!houve_melhora)
+        cout << "Nao houve melhora no reinsertion" << endl;
+        
+    return houve_melhora;
 }
 
 
@@ -147,10 +151,12 @@ int CVRP::calculaCustoSwap(Solucao *s, Data *d, int rota, int cliente1, int clie
     return custo;
 }
 
+// aplica o melhor swap da melhor melhora
 bool CVRP::melhorouSwap(Solucao *s, Data *d){
 
     int qtd_rotas = s->get_rotas().size();
     int tamanho_da_rota = 0;
+    bool houve_melhora = false;
     // Precisamos de uma rota com no mínimo 2 clientes para tentar fazer a troca
     for(int rota_escolhida = 0; rota_escolhida < qtd_rotas; rota_escolhida++){
         // cout << "Verificando swap na rota: " << rota_escolhida+1 << endl;
@@ -196,23 +202,26 @@ bool CVRP::melhorouSwap(Solucao *s, Data *d){
 
             // Se houve alguma melhora em qualquer rota retornamos que houve uma melhora na solução
             cout << "Houve melhora no swap" << endl;
-            return true;
+            houve_melhora = true;
         }
     }
-    cout << "Nao houve melhora no swap" << endl;
-    return false;
+
+    if(!houve_melhora)
+        cout << "Nao houve melhora no swap" << endl;
+
+    return houve_melhora;
 }
 
 
 // 2-OPT
 int CVRP::calculaCusto2opt(Solucao *s, Data *d, int rota, int cliente1, int cliente2){
 
-
+    return 1;
 }
 
 bool CVRP::melhorou2opt(Solucao *s, Data *d){
 
-
+    return true;
 }
 
 
@@ -318,9 +327,29 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
 }
 
 
+// TERCEIRIZAÇÃO
+int CVRP::calculaCustoTerceirizacao(Solucao *s, Data *d, int rota, int cliente1, int cliente2){
+
+
+
+    return 1;
+}
+
+bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){
+    vector<int> custos = d->get_custos_terceirizacao();
+    for(int i=0; i < custos.size(); i++){
+        cout << custos[i] << " "; 
+    }
+    cout << endl;
+    
+    cout << "Houve melhora na terceirizacao" << endl;
+    return false;
+}
+
+
 // RVND (Random Variable Neighbourhood Descent, escolhe as estruturas de vizinhança de forma aleatória)
 void CVRP::BuscaLocal(Solucao *s, Data *d){
-    vector<int> NL = {1, 2, 3};
+    vector<int> NL = {1, 2, 3, 4};
     bool improved = false;
     while(!NL.empty()){
         int n = rand() % NL.size();
@@ -334,9 +363,12 @@ void CVRP::BuscaLocal(Solucao *s, Data *d){
             case 3:
                 improved = melhorouShift(s, d);
                 break;
+            case 4:
+                improved = melhorouTerceirizacao(s, d);
+                break;
         }
         if(improved)
-            NL = {1, 2, 3};
+            NL = {1, 2, 3, 4};
         else
             NL.erase(NL.begin() + n);
     }
