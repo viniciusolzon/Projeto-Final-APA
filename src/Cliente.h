@@ -7,6 +7,7 @@ class Cliente{
         int demanda;
         int custoTerceirizacao;
         bool atendido = false;
+        bool terceirizado = false; // talvez nao precise
 
     public:
         Cliente(int demanda, int custo_terceirizacao); // Construtor
@@ -32,6 +33,13 @@ class Cliente{
         }
         void set_atendido(bool a){
             this->atendido = a;
+        }
+
+        bool get_terceirizado(){
+            return this->terceirizado;
+        }
+        void set_terceirizado(bool t){
+            this->terceirizado = t;
         }
 };
 

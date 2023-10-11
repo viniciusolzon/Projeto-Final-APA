@@ -52,22 +52,37 @@ void Solucao::info(){
     }
 
     // Clientes
-    int todos_atendidos = true;
+    bool todos_atendidos = true;
+    bool nenhum_terceirizado = true;
     for(int i = 0; i < this->clientes.size(); i++){
         // cout << "Cliente " << i+1;
         // cout << "   Demanda = " << clientes[i]->get_demanda() << "\n";
         // cout << "   Custo de Terceirizacao = " << clientes[i]->get_custoTerceirizacao() << "\n";
         if(!clientes[i]->get_atendido())
             todos_atendidos = false;
+        if(!clientes[i]->get_terceirizado())
+            nenhum_terceirizado = false;
+    }
+
+    if(nenhum_terceirizado){
+        cout << "Nenhum cliente foi terceirizado\n";
+    }
+    else{
+        cout << "Clientes terceirizados: ";
+        for(int i = 0; i < this->clientes.size(); i++){
+            if(clientes[i]->get_terceirizado())
+                cout << i+1 << " ";
+        }
+        cout << "\n";
     }
 
     if(todos_atendidos){
-        cout << "Todos clientes foram atendidos" << endl;
+        cout << "Todos clientes foram atendidos\n";
     }
     else{
         for(int i = 0; i < this->clientes.size(); i++){
             if(!clientes[i]->get_atendido())
-                cout << "Cliente " << i+1 << " nao foi atendido" << endl;
+                cout << "Cliente " << i+1 << " nao foi atendido\n";
         }
     }
     

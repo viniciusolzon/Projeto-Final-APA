@@ -43,7 +43,7 @@ class CVRP{
         bool verificaCapacidadeRotas(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2);
 
         // Terceirização
-        int calculaCustoTerceirizacao(Solucao *s, Data *d, int rota, int cliente1, int cliente2);
+        int calculaCustoTerceirizacao(Solucao *s, Data *d, int rota, int cliente);
         bool melhorouTerceirizacao(Solucao *s, Data *d);
 
 
