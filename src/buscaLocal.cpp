@@ -203,6 +203,19 @@ bool CVRP::melhorouSwap(Solucao *s, Data *d){
     return false;
 }
 
+
+// 2-OPT
+int CVRP::calculaCusto2opt(Solucao *s, Data *d, int rota, int cliente1, int cliente2){
+
+
+}
+
+bool CVRP::melhorou2opt(Solucao *s, Data *d){
+
+
+}
+
+
 // SHIFT
 int CVRP::calculaCustoShift(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2){
     int antes = 0, depois = 0, custo = 0;
