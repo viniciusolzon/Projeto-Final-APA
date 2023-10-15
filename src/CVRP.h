@@ -9,14 +9,21 @@ class CVRP{
     private:
         // int maxIterILS; // caso decidirmos utilizar a meta-heurística ILS (Iterated Local Search), tenho ela fácil implementada já
         int maxIter;
+        int maxIterILS;
         Data dados;
         Solucao melhor_solucao;
 
     public:
-        CVRP(Data dados){this->dados = dados;} // Construtor da classe
+        // Construtor da classe
+        CVRP(Data dados){
+            this->dados = dados;
+            this->maxIterILS = dados.get_n() >= 150 ? dados.get_n() / 2 : dados.get_n();
+        }
         ~CVRP(){} // Destrutor da classe
 
-        // Funções para a heurística construtiva da solução
+        Solucao get_solution(){return melhor_solucao;}
+
+        // Funções para a construção
         Solucao Construcao(Data *d); // A heurística construtiva utilizada será a do 'vizinho mais pŕoximo'
         int vizinhoMaisProximo(int atual, Solucao *solucao, Data *d, int capacidadeAtual);
 
@@ -43,11 +50,22 @@ class CVRP{
         bool verificaCapacidadeRotas(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2);
 
         // Terceirização
+        bool verificaLimiteL(Solucao *s, Data *d);
         int calculaCustoTerceirizacao(Solucao *s, Data *d, int rota, int cliente);
         bool melhorouTerceirizacao(Solucao *s, Data *d);
+        // Desterceirização
+        bool verificaCapacidade(Solucao *s, Data *d, int rota, int cliente);
+        int calculaCustoDesterceirizacao(Solucao *s, Data *d, int rota, int posicao, int cliente);
+        bool melhorouDesterceirizacao(Solucao *s, Data *d);
 
+
+        // Funções para a perturbação
+        Solucao Perturbacao(Solucao *s, Data *d); // A heurística construtiva utilizada será a do 'vizinho mais pŕoximo'
 
         void solve();
+        void solveILS();
+
+        void info();
 };
 
 #endif

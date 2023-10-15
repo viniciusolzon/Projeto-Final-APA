@@ -3,6 +3,7 @@
 Solucao::Solucao(int capacidades, vector<int> demandas, vector<int> custos_terceirizacao, int k){
 
     this->custo = 0;
+    this->num_clientesTerceirizados = 0;
     // Inicializa os clientes
     for(int i = 0; i < demandas.size(); i++){
         Cliente *novo_cliente = new Cliente(demandas[i], custos_terceirizacao[i]);
@@ -42,6 +43,9 @@ void Solucao::removeDaRota(int rota, int index){
 
 
 void Solucao::info(){
+
+    cout << "Custo:  " << setprecision(2) << fixed << custo << endl;
+
     // Rotas
     for (int i = 0; i < this->rotas.size(); i++){
         cout << "Rota do veiculo " << i+1 << ": ";
@@ -68,6 +72,7 @@ void Solucao::info(){
         cout << "Nenhum cliente foi terceirizado\n";
     }
     else{
+        // cout << "num_clientesTerceirizados = " << this->num_clientesTerceirizados << "\n";
         cout << "Clientes terceirizados: ";
         for(int i = 0; i < this->clientes.size(); i++){
             if(clientes[i]->get_terceirizado())
@@ -85,7 +90,4 @@ void Solucao::info(){
                 cout << "Cliente " << i+1 << " nao foi atendido\n";
         }
     }
-    
-    cout << "\nCusto:  " << setprecision(2) << fixed << custo << endl;
 }
-

@@ -14,6 +14,11 @@ int main(int argc, char *argv[]){
     // dados.info();
 
     CVRP problema(dados);
-    problema.solve();
+    if(argc == 2)
+        problema.solve();
+    else
+        problema.solveILS();
+        
+    problema.get_solution().info();
 
 }

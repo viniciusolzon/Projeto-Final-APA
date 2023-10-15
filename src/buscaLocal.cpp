@@ -328,6 +328,18 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
 
 
 // TERCEIRIZAÇÃO
+bool CVRP::verificaLimiteL(Solucao *s, Data *d){
+
+    // A quantidade de clientes não terceirizados tem que ser maior do que o limite L
+    // Tem q ser MAIOR pq se for igual ao terceirizar a qtd de clientes não terceirizados
+    // vai ser menos do que o limite L
+    if(d->get_n() - s->get_num_clientesTerceirizados() > d->get_L())
+        return true;
+    
+    // cout << "Limite L nao deixa terceirizar" << endl;
+    return false;
+}
+
 int CVRP::calculaCustoTerceirizacao(Solucao *s, Data *d, int rota, int cliente){
     int antes = 0, depois = 0, custo = 0;
 
@@ -340,6 +352,9 @@ int CVRP::calculaCustoTerceirizacao(Solucao *s, Data *d, int rota, int cliente){
     depois+= d->get_custos_terceirizacao()[cliente]; // custo de terceirizar aquele cliente
 
     custo = depois - antes;
+    // cout << "Custo de terceirizar o cliente " << s->get_rotas()[rota][cliente] << " = " << custo << endl;
+    // cout << "Custo antes " << antes << endl;
+    // cout << "Custo depois " << depois << endl;
     return custo;
 }
 
@@ -348,8 +363,8 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){
     // int melhor_custo = 0;
     // int custo = 0;
     int melhor_terceirizacao;
-    int melhor_desterceirizacao;
     bool houve_melhora = false;
+    bool limite_respeitado = false;
 
     int qtd_rotas = s->get_rotas().size();
 
@@ -359,6 +374,12 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){
         int custo = 0;
 
         for(int i = 1; i < s->get_rotas()[rota_escolhida].size() - 1; i++){
+
+            // Antes de calcular o custo da terceirização do cliente, é preciso verificar
+            // se dá pra terceirizar respeitando o limite mínimo L de entregas não terceirizadas
+            limite_respeitado = verificaLimiteL(s, d);
+            if(!limite_respeitado)
+                continue;
 
             custo = calculaCustoTerceirizacao(s, d, rota_escolhida, i);
             if(melhorou(melhor_custo, custo)){
@@ -374,9 +395,12 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){
             // s->info();
 
             s->get_clientes()[s->get_rotas()[rota_escolhida][melhor_terceirizacao]-1]->set_terceirizado(true);
+            s->terceirizaCliente(melhor_terceirizacao);
 
             s->removeDaRota(rota_escolhida, melhor_terceirizacao);
             s->atualiza_custo(s->get_custo() + melhor_custo);
+
+            s->atualiza_num_clientesTerceirizados(s->get_num_clientesTerceirizados() + 1);
 
 
             // cout << "Depois da terceirizacao:" << endl;
@@ -386,14 +410,119 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){
         }
     }
 
-    cout << "Houve melhora na terceirizacao" << endl;
+    if(houve_melhora)
+        cout << "Houve melhora na terceirizacao" << endl;
+    else
+        cout << "Nao houve melhora na terceirizacao" << endl;
+        
     return houve_melhora;
 }
 
 
+// DESTERCEIRIZACAO
+bool CVRP::verificaCapacidade(Solucao *s, Data *d, int rota, int cliente_terceirizado){
+
+    int demanda_cliente = d->get_demandas()[s->get_clientes_terceirizados()[cliente_terceirizado-1]];
+    int capacidade_restante = s->get_capacidadeRota(rota);
+
+    if(demanda_cliente > capacidade_restante)
+        return false;
+
+    return true;
+}
+
+int CVRP::calculaCustoDesterceirizacao(Solucao *s, Data *d, int rota, int posicao, int cliente_terceirizado){
+    int antes = 0, depois = 0, custo = 0;
+
+    // Vamos colocar ele da rota
+    // Adicionar o custos de suas novas arestas e remover os custos das antigas arestas e o de terceirizacao
+    antes = d->get_custo(s->get_rotas()[rota][posicao-1], s->get_rotas()[rota][posicao]);
+    antes+= d->get_custo(s->get_rotas()[rota][posicao], s->get_rotas()[rota][posicao+1]);
+    antes+= d->get_custos_terceirizacao()[cliente_terceirizado]; // custo de terceirizar aquele cliente
+
+    depois = d->get_custo(s->get_rotas()[rota][posicao-1], s->get_rotas()[rota][cliente_terceirizado]);
+    depois+= d->get_custo(s->get_rotas()[rota][cliente_terceirizado], s->get_rotas()[rota][posicao+1]);
+
+    custo = depois - antes;
+
+    cout << "Custo pra desterceirizar o cliente " << s->get_clientes_terceirizados()[cliente_terceirizado];
+    cout << " = " << custo << endl;
+    return custo;
+}
+
+bool CVRP::melhorouDesterceirizacao(Solucao *s, Data *d){
+
+    // Primeiro verifica se tem algum cliente terceirizado
+    if(s->get_num_clientesTerceirizados() == 0){
+        cout << "Nao da pra desterceirizar" << endl;
+        return false;
+    }
+
+    // int melhor_custo = 0;
+    // int custo = 0;
+    int melhor_lugar;
+    bool houve_melhora = false;
+    bool capacidade_respeitada = false;
+
+    int qtd_rotas = s->get_rotas().size();
+
+    for(int rota_escolhida = 0; rota_escolhida < qtd_rotas; rota_escolhida++){
+        int melhor_custo = 0;
+        int custo = 0;
+
+        for(int cliente_terceirizado = 0; cliente_terceirizado < s->get_num_clientesTerceirizados(); cliente_terceirizado++){
+
+            // Testa se vale a pena desterceirizar algum cliente da rota atual
+            for(int i = 1; i < s->get_rotas()[rota_escolhida].size() - 1; i++){
+                
+                // Antes de calcular o custo da desterceirização do cliente, é preciso verificar
+                // se dá pra desterceirizar respeitando o limite Q da capacidade dos veículos de entregas
+                capacidade_respeitada = verificaCapacidade(s, d, rota_escolhida, cliente_terceirizado);
+                if(!capacidade_respeitada)
+                    continue;
+
+                custo = calculaCustoDesterceirizacao(s, d, rota_escolhida, i, cliente_terceirizado);
+                if(melhorou(melhor_custo, custo)){
+                    melhor_custo = custo;
+                    melhor_lugar = i;
+                }
+            }
+
+            // Se desterceirizar algum cliente na rota atual é melhor para a solucao, já desterceirizamos aquele cliente
+            if(melhor_custo < 0){
+                // cout << "Desterceirizando o cliente de indice " << melhor_terceirizacao << " da rota "  << rota_escolhida+1 << endl;
+                // cout << "Antes da desterceirizacao:" << endl;
+                // s->info();
+
+                s->get_clientes()[s->get_rotas()[rota_escolhida][cliente_terceirizado]-1]->set_terceirizado(false);
+                s->desterceirizaCliente(cliente_terceirizado);
+
+                s->insereNaRota(rota_escolhida, melhor_lugar, s->get_clientes_terceirizados()[cliente_terceirizado]);
+
+                s->atualiza_custo(s->get_custo() + melhor_custo);
+
+
+                // cout << "Depois da desterceirizacao:" << endl;
+                // s->info();
+
+                houve_melhora = true;
+            }
+        }
+    }
+
+    if(houve_melhora)
+        cout << "Houve melhora na desterceirizacao" << endl;
+    else
+        cout << "Nao houve melhora na desterceirizacao" << endl;
+        
+    return houve_melhora;
+}
+
+
+
 // RVND (Random Variable Neighbourhood Descent, escolhe as estruturas de vizinhança de forma aleatória)
 void CVRP::BuscaLocal(Solucao *s, Data *d){
-    vector<int> NL = {1, 2, 3, 4}; // alterar a estrutura de dados para maior eficiência
+    vector<int> NL = {1, 2, 3, 4, 5}; // alterar a estrutura de dados para maior eficiência
     bool improved = false;
     while(!NL.empty()){
         int n = rand() % NL.size();
@@ -410,9 +539,12 @@ void CVRP::BuscaLocal(Solucao *s, Data *d){
             case 4:
                 improved = melhorouTerceirizacao(s, d);
                 break;
+            case 5:
+                improved = melhorouDesterceirizacao(s, d);
+                break;
         }
         if(improved)
-            NL = {1, 2, 3, 4};
+            NL = {1, 2, 3, 4, 5};
         else
             NL.erase(NL.begin() + n);
     }
