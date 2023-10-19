@@ -30,6 +30,31 @@ void CVRP::solve(){
     cout << endl;
     melhor_de_todas.info();
 
+    // cout << endl;
+    // cout << endl;
+    // cout << "Entrou na perturbacao";
+    // cout << endl;
+    // cout << endl;
+    // Solucao melhor_de_todas_teste(dados.get_Q(), dados.get_demandas(), dados.get_custos_terceirizacao(), dados.get_k()); // Cria a solução que guardará a melhor solução possível
+    // melhor_de_todas_teste = Perturbacao(&melhor_de_todas, &dados); // Tenta melhorar o máximo possível a solução
+    // cout << endl;
+    // cout << "Saiu da perturbacao";
+    // cout << endl;
+    // cout << endl;
+    // melhor_de_todas_teste.info();
+
+    // cout << endl;
+    // cout << endl;
+    // cout << "Entrou na busca local";
+    // cout << endl;
+    // cout << endl;
+    // BuscaLocal(&melhor_de_todas_teste, &dados); // Tenta melhorar o máximo possível a solução
+    // cout << endl;
+    // cout << "Saiu da busca local";
+    // cout << endl;
+    // cout << endl;
+    // melhor_de_todas_teste.info();
+
     auto end = std::chrono::high_resolution_clock::now(); // Para o cronômetro
     std::chrono::duration<double, std::milli> float_ms = end - start; // Calcula o tempo do cronômetro
     cout << "\nTempo de execucao:  " << float_ms.count() / 1000.0000000000000 << " segundos" << "\n";
@@ -89,7 +114,8 @@ void CVRP::calculaTudo(){
     }
 
     for (int i = 0; i < this->get_solution().get_clientes_terceirizados().size(); i++){
-        cout << "Custo de terceirizacao: " << dados.get_custos_terceirizacao()[this->get_solution().get_clientes_terceirizados()[i]-1] << endl;
+        // cout << "Cliente " << this->get_solution().get_clientes_terceirizados()[i] << endl;
+        // cout << "Custo de terceirizacao: " << dados.get_custos_terceirizacao()[this->get_solution().get_clientes_terceirizados()[i]-1] << endl;
         custo_total+= dados.get_custos_terceirizacao()[this->get_solution().get_clientes_terceirizados()[i]-1];
     }
 

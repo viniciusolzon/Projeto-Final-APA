@@ -74,10 +74,8 @@ void Solucao::info(){
     else{
         // cout << "num_clientesTerceirizados = " << this->num_clientesTerceirizados << "\n";
         cout << "Terceirizados: ";
-        for(int i = 0; i < this->clientes.size(); i++){
-            if(clientes[i]->get_terceirizado())
-                cout << i+1 << " ";
-        }
+        for(int i = 0; i < this->clientes_terceirizados.size(); i++)
+            cout << this->clientes_terceirizados[i] << " ";
         cout << "\n";
     }
 

@@ -43,16 +43,18 @@ bool CVRP::melhorouReinsertion(Solucao *s, Data *d){
     int tamanho_da_rota = 0;
     bool houve_melhora = false;
 
+    int custo = 0;
+    int melhor_custo = 0;
+    int melhor_cliente = 0;
+    int melhor_rota = 0;
+    int melhor_posicao = 0;
+
     // Precisamos de uma rota com no mínimo 2 clientes para tentar fazer a reinserção
     for(int rota_escolhida = 0; rota_escolhida < qtd_rotas; rota_escolhida++){
         tamanho_da_rota = s->get_rotas()[rota_escolhida].size();
-        if(tamanho_da_rota < 4){
-            continue;
-        }
 
-        int melhor_custo = 0;
-        int custo = 0;
-        int melhor_cliente, melhor_posicao;
+        if(tamanho_da_rota < 4)
+            continue;
 
         // Se a rota escolhida tiver mais que 2 clientes precisamos testar todas os possíveis lugares em que
         // o cliente pode ser reinserido na rota
@@ -65,32 +67,33 @@ bool CVRP::melhorouReinsertion(Solucao *s, Data *d){
                 }
                 custo = calculaCustoReinsertion(s, d, rota_escolhida, i, j);
                 if(melhorou(melhor_custo, custo)){
+                    melhor_rota = rota_escolhida;
                     melhor_custo = custo;
                     melhor_cliente = i;
                     melhor_posicao = j;
                 }
             }
         }
-    
-        // Se o reisertion melhora a solucao, aplicamos o movimento na solucao atual
-        if(melhor_custo < 0){
+    }
 
-            int elemento = s->get_rotas()[rota_escolhida][melhor_cliente];
+    // Se o reisertion melhora a solucao, aplicamos o movimento na solucao atual
+    if(melhor_custo < 0){
 
-            if(melhor_cliente > melhor_posicao){
-                s->removeDaRota(rota_escolhida, melhor_cliente);
-                s->insereNaRota(rota_escolhida, melhor_posicao, elemento);
-            }
-            else{
-                s->insereNaRota(rota_escolhida, melhor_posicao, elemento);
-                s->removeDaRota(rota_escolhida, melhor_cliente);
-            }
+        int elemento = s->get_rotas()[melhor_rota][melhor_cliente];
 
-            s->atualiza_custo(s->get_custo() + melhor_custo);
-            
-            // Se houve alguma melhora em qualquer rota retornamos que houve uma melhora na solução
-            houve_melhora = true;
+        if(melhor_cliente > melhor_posicao){
+            s->removeDaRota(melhor_rota, melhor_cliente);
+            s->insereNaRota(melhor_rota, melhor_posicao, elemento);
         }
+        else{
+            s->insereNaRota(melhor_rota, melhor_posicao, elemento);
+            s->removeDaRota(melhor_rota, melhor_cliente);
+        }
+
+        s->atualiza_custo(s->get_custo() + melhor_custo);
+        
+        // Se houve alguma melhora em qualquer rota retornamos que houve uma melhora na solução
+        houve_melhora = true;
     }
     
     if(houve_melhora){
@@ -155,18 +158,18 @@ bool CVRP::melhorouSwap(Solucao *s, Data *d){
     int tamanho_da_rota = 0;
     bool houve_melhora = false;
 
+    int custo = 0;
+    int melhor_custo = 0;
+    int melhor_cliente1, melhor_cliente2 = 0;;
+    int melhor_rota = 0;
+
     // Precisamos de uma rota com no mínimo 2 clientes para tentar fazer a troca
     for(int rota_escolhida = 0; rota_escolhida < qtd_rotas; rota_escolhida++){
         tamanho_da_rota = s->get_rotas()[rota_escolhida].size();
         
-        if(tamanho_da_rota < 4){
+        if(tamanho_da_rota < 4)
             continue;
-        }
-
-        int melhor_custo = 0;
-        int custo = 0;
-        int melhor_cliente1, melhor_cliente2;
-
+        
         // Se a rota escolhida tiver mais que 2 clientes precisamos testar todas combinações possíveis entre os clientes
         for(int i = 1; i < s->get_rotas()[rota_escolhida].size() - 2; i++){
             for(int j = i + 1; j < s->get_rotas()[rota_escolhida].size() - 1; j++){
@@ -182,24 +185,25 @@ bool CVRP::melhorouSwap(Solucao *s, Data *d){
 
                 if(melhorou(melhor_custo, custo)){
                     melhor_custo = custo;
+                    melhor_rota = rota_escolhida;
                     melhor_cliente1 = i;
                     melhor_cliente2 = j;
                 }
             }
         }
-    
-        // Se o swap melhora a solucao, aplicamos o movimento na solucao atual
-        if(melhor_custo < 0){
+    }
 
-            int aux = s->get_rotas()[rota_escolhida][melhor_cliente1];
-            s->atualizaRota(rota_escolhida, melhor_cliente1, s->get_rotas()[rota_escolhida][melhor_cliente2]);
-            s->atualizaRota(rota_escolhida, melhor_cliente2, aux);
-            s->atualiza_custo(s->get_custo() + melhor_custo);
-            // cout << "SWAP MELHOROU O CUSTO DA ROTA DE " << s->get_custo() << " PARA " << s->get_custo() + melhor_custo << endl;
-            
-            // Se houve alguma melhora em qualquer rota retornamos que houve uma melhora na solução
-            houve_melhora = true;
-        }
+    // Se o swap melhora a solucao, aplicamos o movimento na solucao atual
+    if(melhor_custo < 0){
+
+        int aux = s->get_rotas()[melhor_rota][melhor_cliente1];
+        s->atualizaRota(melhor_rota, melhor_cliente1, s->get_rotas()[melhor_rota][melhor_cliente2]);
+        s->atualizaRota(melhor_rota, melhor_cliente2, aux);
+        s->atualiza_custo(s->get_custo() + melhor_custo);
+        // cout << "SWAP MELHOROU O CUSTO DA ROTA DE " << s->get_custo() << " PARA " << s->get_custo() + melhor_custo << endl;
+        
+        // Se houve alguma melhora em qualquer rota retornamos que houve uma melhora na solução
+        houve_melhora = true;
     }
 
     if(houve_melhora){
@@ -224,7 +228,7 @@ bool CVRP::melhorou2opt(Solucao *s, Data *d){
 
 
 // SHIFT
-int CVRP::calculaCustoShift(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2){
+int CVRP::calculaCustoShift(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2){ // Verificado ta certo
     int antes = 0, depois = 0, custo = 0;
 
     antes = d->get_custo(s->get_rotas()[rota1][cliente1-1], s->get_rotas()[rota1][cliente1]);
@@ -264,19 +268,17 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
 
     int qtd_rotas = s->get_rotas().size();
 
+    int melhor_custo = 0;
+    int custo = 0;
+    int melhor_cliente1, melhor_cliente2;
+    int melhor_rota1, melhor_rota2;
     bool capacidade_excedida = false;
     bool houve_melhora = false;
     
     // Passamos por todas as rotas pra tentar o shift
     for(int rota1_escolhida = 0; rota1_escolhida < qtd_rotas-1; rota1_escolhida++){
 
-
         for(int rota2_escolhida = rota1_escolhida + 1; rota2_escolhida < qtd_rotas; rota2_escolhida++){
-
-            int melhor_custo = 0;
-            int custo = 0;
-            int melhor_cliente1, melhor_cliente2;
-            int melhor_rota1, melhor_rota2;
 
             // Testa o shift com todos os clientes da rota1 com todos os clientes da rota2
             for(int i = 1; i < s->get_rotas()[rota1_escolhida].size() - 1; i++){
@@ -300,59 +302,63 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
                     }
                 }
             }
-        
-            // Se o shift melhora a solucao, aplicamos o movimento na solucao atual
-            if(melhor_custo < 0){
-                // cout << "Antes do shift:" << endl;
-                // s->info();
-
-                int cliente1 = s->get_rotas()[melhor_rota1][melhor_cliente1];
-                int cliente2 = s->get_rotas()[melhor_rota2][melhor_cliente2];
-                int demanda_cliente1 = s->get_clientes()[cliente1-1]->get_demanda();
-                int demanda_cliente2 = s->get_clientes()[cliente2-1]->get_demanda();
-                int capacidade_rota1 = s->get_capacidadeRota(melhor_rota1);
-                int capacidade_rota2 = s->get_capacidadeRota(melhor_rota2);
-                // retirar o cliente 1 da rota 1 e colocar o 2 no lugar dele
-                int nova_capacidade_rota1 = capacidade_rota1 + demanda_cliente1 - demanda_cliente2;
-                // retirar o cliente 2 da rota 2 e colocar o 1 no lugar dele
-                int nova_capacidade_rota2 = capacidade_rota2 + demanda_cliente2 - demanda_cliente1;
-
-                // cout << "Primeira rota escolhida é a rota " << melhor_rota1+1 << endl;
-                // cout << "Primeiro cliente escolhido é o cliente " << cliente1 << endl;
-                // cout << "Segunda rota escolhida é a rota " << melhor_rota2+1 << endl;
-                // cout << "Segundo cliente escolhido é o cliente " << cliente2 << endl;
-                // getchar();
-
-                // atualiza a capacidade das 2 rotas após a alteração
-                s->atualizaCapacidade(melhor_rota1, nova_capacidade_rota1);
-                s->atualizaCapacidade(melhor_rota2, nova_capacidade_rota2);
-
-                // cout << "Depois do shift:" << endl;
-
-                int aux = s->get_rotas()[melhor_rota1][melhor_cliente1];
-                s->atualizaRota(melhor_rota1, melhor_cliente1, s->get_rotas()[melhor_rota2][melhor_cliente2]);
-                s->atualizaRota(melhor_rota2, melhor_cliente2, aux);
-                s->atualiza_custo(s->get_custo() + melhor_custo);
-
-                // s->info();
-
-                // cout << "\nCapacidade da rota " << melhor_rota1+1 << " antes de retirar o cliente " << cliente1 << " = " << capacidade_rota1 << endl;
-                // cout << "Capacidade da rota " << melhor_rota2+1 << " antes de retirar o cliente " << cliente2 << " = " << capacidade_rota2 << endl;
-                
-                // cout << "Capacidade da rota " << melhor_rota1+1 << " ao retirar o cliente " << cliente1 << " = " << capacidade_rota1 + demanda_cliente1 << endl;
-                // cout << "Capacidade da rota " << melhor_rota2+1 << " ao retirar o cliente " << cliente2 << " = " << capacidade_rota2 + demanda_cliente2 << endl;
-
-                // cout << "Capacidade da rota " << melhor_rota1+1 << " depois de colocar o outro cliente = " << s->get_capacidadeRota(melhor_rota1) << endl;
-                // cout << "Capacidade da rota " << melhor_rota2+1 << " depois de colocar o outro cliente = " << s->get_capacidadeRota(melhor_rota2) << endl;
-
-                // cout << "Demanda do cliente " << cliente1 << " = " << demanda_cliente1 << endl;
-                // cout << "Demanda do cliente " << cliente2 << " = " << demanda_cliente2 << endl;
-                // getchar();
-                
-                // cout << "Custo após melhora: " << melhor_custo << endl;
-                houve_melhora = true;
-            }
         }
+    }
+
+    // Se o shift melhora a solucao, aplicamos o movimento na solucao atual
+    if(melhor_custo < 0){
+
+        // cout << "Antes do shift:" << endl;
+        // s->info();
+        // getchar();
+
+        int cliente1 = s->get_rotas()[melhor_rota1][melhor_cliente1];
+        int cliente2 = s->get_rotas()[melhor_rota2][melhor_cliente2];
+        int demanda_cliente1 = s->get_clientes()[cliente1-1]->get_demanda();
+        int demanda_cliente2 = s->get_clientes()[cliente2-1]->get_demanda();
+        int capacidade_rota1 = s->get_capacidadeRota(melhor_rota1);
+        int capacidade_rota2 = s->get_capacidadeRota(melhor_rota2);
+        // retirar o cliente 1 da rota 1 e colocar o 2 no lugar dele
+        int nova_capacidade_rota1 = capacidade_rota1 + demanda_cliente1 - demanda_cliente2;
+        // retirar o cliente 2 da rota 2 e colocar o 1 no lugar dele
+        int nova_capacidade_rota2 = capacidade_rota2 + demanda_cliente2 - demanda_cliente1;
+
+        // cout << "Primeira rota escolhida é a rota " << melhor_rota1+1 << endl;
+        // cout << "Primeiro cliente escolhido é o cliente " << cliente1 << endl;
+        // cout << "Segunda rota escolhida é a rota " << melhor_rota2+1 << endl;
+        // cout << "Segundo cliente escolhido é o cliente " << cliente2 << endl;
+        // getchar();
+
+        // atualiza a capacidade das 2 rotas após a alteração
+        s->atualizaCapacidade(melhor_rota1, nova_capacidade_rota1);
+        s->atualizaCapacidade(melhor_rota2, nova_capacidade_rota2);
+
+        // cout << "Depois do shift:" << endl;
+
+        int aux = s->get_rotas()[melhor_rota1][melhor_cliente1];
+        s->atualizaRota(melhor_rota1, melhor_cliente1, s->get_rotas()[melhor_rota2][melhor_cliente2]);
+        s->atualizaRota(melhor_rota2, melhor_cliente2, aux);
+        s->atualiza_custo(s->get_custo() + melhor_custo);
+
+        // cout << "Depois do shift:" << endl;
+        // s->info();
+        // getchar();
+
+        // cout << "\nCapacidade da rota " << melhor_rota1+1 << " antes de retirar o cliente " << cliente1 << " = " << capacidade_rota1 << endl;
+        // cout << "Capacidade da rota " << melhor_rota2+1 << " antes de retirar o cliente " << cliente2 << " = " << capacidade_rota2 << endl;
+        
+        // cout << "Capacidade da rota " << melhor_rota1+1 << " ao retirar o cliente " << cliente1 << " = " << capacidade_rota1 + demanda_cliente1 << endl;
+        // cout << "Capacidade da rota " << melhor_rota2+1 << " ao retirar o cliente " << cliente2 << " = " << capacidade_rota2 + demanda_cliente2 << endl;
+
+        // cout << "Capacidade da rota " << melhor_rota1+1 << " depois de colocar o outro cliente = " << s->get_capacidadeRota(melhor_rota1) << endl;
+        // cout << "Capacidade da rota " << melhor_rota2+1 << " depois de colocar o outro cliente = " << s->get_capacidadeRota(melhor_rota2) << endl;
+
+        // cout << "Demanda do cliente " << cliente1 << " = " << demanda_cliente1 << endl;
+        // cout << "Demanda do cliente " << cliente2 << " = " << demanda_cliente2 << endl;
+        // getchar();
+        
+        // cout << "Custo após melhora: " << melhor_custo << endl;
+        houve_melhora = true;
     }
 
     if(houve_melhora){
@@ -367,7 +373,7 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
 
 
 // TERCEIRIZAÇÃO
-bool CVRP::verificaLimiteL(Solucao *s, Data *d){
+bool CVRP::verificaLimiteL(Solucao *s, Data *d){ // Verificado ta certo
 
     // A quantidade de clientes não terceirizados tem que ser maior do que o limite L
     // Tem q ser MAIOR pq se for igual ao terceirizar a qtd de clientes não terceirizados
@@ -378,7 +384,7 @@ bool CVRP::verificaLimiteL(Solucao *s, Data *d){
     return false;
 }
 
-int CVRP::calculaCustoTerceirizacao(Solucao *s, Data *d, int rota, int cliente){
+int CVRP::calculaCustoTerceirizacao(Solucao *s, Data *d, int rota, int cliente){ // Verificado ta certo
     int antes = 0, depois = 0, custo = 0;
 
     // Vamos tirar ele da rota
@@ -398,23 +404,24 @@ int CVRP::calculaCustoTerceirizacao(Solucao *s, Data *d, int rota, int cliente){
     // cout << "CUSTO ANTES = " << antes << endl;
     // cout << "CUSTO DEPOIS = " << depois << endl;
     // cout << "CUSTO = " << custo << endl << endl;
+
     return custo;
 }
 
-bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){
+bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){ // Verificado ta certo
 
     int melhor_rota;
     int melhor_terceirizacao;
     bool houve_melhora = false;
     bool limite_respeitado = false;
+    int melhor_custo = 0;
+    int custo = 0;
 
     int qtd_rotas = s->get_rotas().size();
 
 
     for(int rota_escolhida = 0; rota_escolhida < qtd_rotas; rota_escolhida++){
         // Testa se vale a pena terceirizar algum cliente da rota atual
-        int melhor_custo = 0;
-        int custo = 0;
 
         for(int i = 1; i < s->get_rotas()[rota_escolhida].size() - 1; i++){
 
@@ -431,46 +438,55 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){
                 melhor_terceirizacao = i;
             }
         }
+    }
 
-        // Se terceirizar algum cliente na rota atual é melhor para a solucao, já terceirizamos aquele cliente
-        if(melhor_custo < 0){
+    // Se terceirizar algum cliente na rota atual é melhor para a solucao, já terceirizamos aquele cliente
+    if(melhor_custo < 0){
 
-            int cliente = s->get_rotas()[rota_escolhida][melhor_terceirizacao];
-            int demanda_cliente = s->get_clientes()[cliente-1]->get_demanda();
-            int capacidade_rota = s->get_capacidadeRota(rota_escolhida);
-            // retirar o cliente da rota 
-            int nova_capacidade_rota = capacidade_rota + demanda_cliente;
+        // cout << "Solucao toda antes de terceirizar: " << endl;
+        // s->info();
+        // getchar();
+
+        int cliente = s->get_rotas()[melhor_rota][melhor_terceirizacao];
+        int demanda_cliente = s->get_clientes()[cliente-1]->get_demanda();
+        int capacidade_rota = s->get_capacidadeRota(melhor_rota);
+        // retirar o cliente da rota 
+        int nova_capacidade_rota = capacidade_rota + demanda_cliente;
+
+        // cout << "Antes de terceirizar" << endl;
+        // s->info();
+        
+        // cout << "Cliente a ser terceirizado: " << cliente << endl;
+        // cout << "Custo de terceirizar: " << d->get_custos_terceirizacao()[cliente-1] << endl;
+        // cout << "Demanda dele: " << d->get_demandas()[cliente-1] << endl;
+        // cout << "Capacidade da rota " << rota_escolhida+1 << " : " << s->get_capacidadeRota(rota_escolhida) << endl;
+
+        // atualiza a capacidade das 2 rotas após a alteração
+        s->atualizaCapacidade(melhor_rota, nova_capacidade_rota);
+
+        // getchar();
+
+        // cout << "Melhor custo: " << melhor_custo << endl;
+
+        // s->get_clientes()[cliente-1]->set_terceirizado(true);
+
+        s->terceirizaCliente(cliente);
+
+        s->removeDaRota(melhor_rota, melhor_terceirizacao);
+        s->atualiza_custo(s->get_custo() + melhor_custo);
 
 
-            // cout << "Antes de terceirizar" << endl;
-            // s->info();
-            
-            // cout << "Cliente a ser terceirizado: " << cliente << endl;
-            // cout << "Custo de terceirizar: " << d->get_custos_terceirizacao()[cliente-1] << endl;
-            // cout << "Demanda dele: " << d->get_demandas()[cliente-1] << endl;
-            // cout << "Capacidade da rota " << rota_escolhida+1 << " : " << s->get_capacidadeRota(rota_escolhida) << endl;
+        // cout << "Solucao toda depois de terceirizar: " << endl;
+        // s->info();
+        // getchar();
 
-            // atualiza a capacidade das 2 rotas após a alteração
-            s->atualizaCapacidade(rota_escolhida, nova_capacidade_rota);
 
-            // getchar();
-
-            // cout << "Melhor custo: " << melhor_custo << endl;
-
-            s->get_clientes()[cliente-1]->set_terceirizado(true);
-
-            s->terceirizaCliente(cliente);
-
-            s->removeDaRota(rota_escolhida, melhor_terceirizacao);
-            s->atualiza_custo(s->get_custo() + melhor_custo);
-
-            houve_melhora = true;
-                            
-            // cout << "Depois de terceirizar" << endl;
-            // s->info();
-            // cout << "Capacidade da rota " << rota_escolhida+1 << " : " << s->get_capacidadeRota(rota_escolhida) << endl;
-            // getchar();
-        }
+        houve_melhora = true;
+                        
+        // cout << "Depois de terceirizar" << endl;
+        // s->info();
+        // cout << "Capacidade da rota " << rota_escolhida+1 << " : " << s->get_capacidadeRota(rota_escolhida) << endl;
+        // getchar();
     }
 
     if(houve_melhora){
@@ -487,18 +503,25 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){
 
 
 // DESTERCEIRIZACAO
-bool CVRP::verificaCapacidade(Solucao *s, Data *d, int rota, int cliente_terceirizado){
+bool CVRP::verificaCapacidade(Solucao *s, Data *d, int rota, int cliente_terceirizado){ // Verificado ta certo
 
     int demanda_cliente = d->get_demandas()[cliente_terceirizado-1];
+    // cout <<"Demanda do cliente " << cliente_terceirizado << " = " << demanda_cliente << endl;
     int capacidade_restante = s->get_capacidadeRota(rota);
+    // cout <<"Capacidade restante da rota "<<  rota+1 << " = " << capacidade_restante << endl;
 
-    if(demanda_cliente > capacidade_restante)
+    if(demanda_cliente > capacidade_restante){
+        // cout <<"Capacidade estourada" << endl;
+        // getchar();
         return false;
+    }
 
+    // cout <<"Capacidade permite" << endl;
+    // getchar();
     return true;
 }
 
-int CVRP::calculaCustoDesterceirizacao(Solucao *s, Data *d, int rota, int posicao, int cliente_terceirizado){
+int CVRP::calculaCustoDesterceirizacao(Solucao *s, Data *d, int rota, int posicao, int cliente_terceirizado){ // Verificado ta certo
     int antes = 0, depois = 0, custo = 0;
 
     // Vamos colocar ele da rota
@@ -510,10 +533,12 @@ int CVRP::calculaCustoDesterceirizacao(Solucao *s, Data *d, int rota, int posica
     depois+= d->get_custo(cliente_terceirizado, s->get_rotas()[rota][posicao+1]);
 
     custo = depois - antes;
+    // cout << "Custo depois de desterceirizar o " << cliente_terceirizado  << " = " << custo << endl;
+    // cout << "vai ser colocado entre " << s->get_rotas()[rota][posicao] << " e " << s->get_rotas()[rota][posicao+1] << endl;
     return custo;
 }
 
-bool CVRP::melhorouDesterceirizacao(Solucao *s, Data *d){
+bool CVRP::melhorouDesterceirizacao(Solucao *s, Data *d){ // Verificado ta certo
 
     // Primeiro verifica se tem algum cliente terceirizado
     if(s->get_num_clientesTerceirizados() == 0){
@@ -525,75 +550,113 @@ bool CVRP::melhorouDesterceirizacao(Solucao *s, Data *d){
     bool houve_melhora = false;
     bool capacidade_respeitada = false;
     int cliente_terceirizado = 0;
-    int melhor_desterceirizacao = 0;
+    int melhor_cliente = 0;
+    int index_melhor_cliente = 0;
+
+    int melhor_custo = 0;
+    int custo = 0;
 
     int qtd_rotas = s->get_rotas().size();
 
     for(int rota_escolhida = 0; rota_escolhida < qtd_rotas; rota_escolhida++){
-        int melhor_custo = 0;
-        int custo = 0;
 
         for(int index = 0; index < s->get_num_clientesTerceirizados(); index++){
+            // cout << "Cliente terceirizado atual: " << s->get_clientes_terceirizados()[index] << endl;
+            // getchar();
+            // continue;
+
+            cliente_terceirizado = s->get_clientes_terceirizados()[index];
+            
+            // Antes de calcular o custo da desterceirização do cliente, é preciso verificar
+            // se dá pra desterceirizar esse cliente na rota atual respeitando o limite do veiculo
+            capacidade_respeitada = verificaCapacidade(s, d, rota_escolhida, cliente_terceirizado);
+            if(!capacidade_respeitada)
+                continue;
 
             // Testa se vale a pena desterceirizar algum cliente da rota atual
-            for(int i = 1; i < s->get_rotas()[rota_escolhida].size() - 1; i++){
-
-                cliente_terceirizado = s->get_clientes_terceirizados()[index];
-                
-                // Antes de calcular o custo da desterceirização do cliente, é preciso verificar
-                // se dá pra desterceirizar respeitando o limite Q da capacidade dos veículos de entregas
-                capacidade_respeitada = verificaCapacidade(s, d, rota_escolhida, cliente_terceirizado);
-                if(!capacidade_respeitada)
-                    continue;
+            for(int i = 0; i < s->get_rotas()[rota_escolhida].size() - 1; i++){
 
                 custo = calculaCustoDesterceirizacao(s, d, rota_escolhida, i, cliente_terceirizado);
                 if(melhorou(melhor_custo, custo)){
                     melhor_rota = rota_escolhida;
-                    melhor_desterceirizacao = cliente_terceirizado;
+                    melhor_cliente = cliente_terceirizado;
+                    index_melhor_cliente = index;
 
                     melhor_custo = custo;
                     melhor_lugar = i;
                 }
             }
-
-            // Se desterceirizar algum cliente na rota atual é melhor para a solucao, já desterceirizamos aquele cliente
-            if(melhor_custo < 0){
-
-                cout << "1" << endl;
-                int cliente = s->get_rotas()[rota_escolhida][melhor_desterceirizacao];
-                cout << "2" << endl;
-                int demanda_cliente = s->get_clientes()[cliente-1]->get_demanda();
-                cout << "3" << endl;
-                int capacidade_rota = s->get_capacidadeRota(rota_escolhida);
-                cout << "4" << endl;
-                // retirar o cliente da rota 
-                int nova_capacidade_rota = capacidade_rota - demanda_cliente;
-                cout << "5" << endl;
-
-
-                // cout << "Antes de terceirizar" << endl;
-                // s->info();
-                
-                // cout << "Cliente a ser terceirizado: " << cliente << endl;
-                // cout << "Custo de terceirizar: " << d->get_custos_terceirizacao()[cliente-1] << endl;
-                // cout << "Demanda dele: " << d->get_demandas()[cliente-1] << endl;
-                // cout << "Capacidade da rota " << rota_escolhida+1 << " : " << s->get_capacidadeRota(rota_escolhida) << endl;
-
-                // atualiza a capacidade das 2 rotas após a alteração
-                s->atualizaCapacidade(rota_escolhida, nova_capacidade_rota);
-
-
-                s->get_clientes()[cliente_terceirizado-1]->set_terceirizado(false);
-
-                s->desterceirizaCliente(index);
-
-                s->insereNaRota(rota_escolhida, melhor_lugar, cliente_terceirizado);
-
-                s->atualiza_custo(s->get_custo() + melhor_custo);
-
-                houve_melhora = true;
-            }
         }
+    }
+
+    // Se desterceirizar algum cliente na rota atual é melhor para a solucao, já desterceirizamos aquele cliente
+    if(melhor_custo < 0){
+        // cout << "ANTES DA DESTERCEIRIZACAO" << endl;
+        // s->info();
+        // getchar();
+
+        // cout << "1" << endl;
+        // cout << "2" << endl;
+
+        // cout << "Vamos desterceirizar = " << melhor_cliente << endl;
+        // cout << "Vamos desterceirizar na rota = " << melhor_rota+1 << endl;
+        // cout << "Vai entrar entre o cliente " << s->get_rotas()[melhor_rota][melhor_lugar] << " e " << s->get_rotas()[melhor_rota][melhor_lugar+1] << endl;
+
+        int demanda_cliente = s->get_clientes()[melhor_cliente-1]->get_demanda();
+        // cout << "3" << endl;
+        int capacidade_rota = s->get_capacidadeRota(melhor_rota);
+        // cout << "4" << endl;
+        // retirar o cliente da rota 
+        int nova_capacidade_rota = capacidade_rota - demanda_cliente;
+        // cout << "5" << endl;
+
+        // cout << "Antes de desterceirizar" << endl;
+        // s->info();
+        
+        // cout << "Custo de terceirizacao: " << d->get_custos_terceirizacao()[melhor_cliente-1] << endl;
+        // getchar();
+
+        // cout << "ANTES DA DESTERCEIRIZACAO" << endl;
+        // s->info();
+        // getchar();
+
+
+        // atualiza a capacidade da rota após a alteração
+        s->atualizaCapacidade(melhor_rota, nova_capacidade_rota);
+
+        // s->get_clientes()[melhor_cliente-1]->set_terceirizado(false);
+
+        // cout << "clientes terceirizados antes da desterceirizacao" << endl;
+        // cout << "tamanho de clientes terceirizados = " << this->get_solution().get_clientes_terceirizados().size() << endl;
+        // // getchar();
+        // for (int i = 0; i < this->get_solution().get_clientes_terceirizados().size(); i++){
+        //     cout << " " << this->get_solution().get_clientes_terceirizados()[i] << endl;
+        // }
+        // // getchar();
+
+        s->desterceirizaCliente(index_melhor_cliente);
+
+        // cout << "clientes terceirizados depois da desterceirizacao" << endl;
+        // for (int i = 0; i < this->get_solution().get_clientes_terceirizados().size(); i++){
+        //     cout << " " << this->get_solution().get_clientes_terceirizados()[i] << endl;
+        // }
+        // // getchar();
+
+
+        s->insereNaRota(melhor_rota, melhor_lugar, melhor_cliente);
+
+        s->atualiza_custo(s->get_custo() + melhor_custo);
+
+
+        // cout << "DEPOIS DA DESTERCEIRIZACAO" << endl;
+        // s->info();
+        // getchar();
+
+        houve_melhora = true;
+
+        // cout << "Depois de desterceirizar" << endl;
+        // s->info();
+        // getchar();
     }
 
     if(houve_melhora){
@@ -607,7 +670,6 @@ bool CVRP::melhorouDesterceirizacao(Solucao *s, Data *d){
         
     return houve_melhora;
 }
-
 
 
 // RVND (Random Variable Neighbourhood Descent, escolhe as estruturas de vizinhança de forma aleatória)
