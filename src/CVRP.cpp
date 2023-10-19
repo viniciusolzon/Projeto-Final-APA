@@ -44,24 +44,27 @@ void CVRP::solveILS(){
     srand(time(NULL)); // Para conseguir gerar números aleatórios
     Solucao melhor_de_todas(dados.get_Q(), dados.get_demandas(), dados.get_custos_terceirizacao(), dados.get_k()); // Cria a solução que guardará a melhor solução possível
 
+
     for(int i = 0; i < maxIter; i++){
-        Solucao current = Construcao(&dados); // Cria a solução atual ( Muita gula e pouca aleatoriedade )
-        Solucao best = current; // Cria a solução que guardará a melhor solução dessa iteração
+        Solucao current = Construcao(&dados);
+        
+        Solucao best = current;
         if(i == 0)
-            melhor_de_todas = current; // Se for a primeira solução criada ela já é atribuída para a melhor solução possível
+            melhor_de_todas = current;
 
         int iterIls = 0;
-        while(iterIls <= maxIterILS){ // Enquanto houver melhoras nessa solução, reinicia-se o processo de melhora
-            BuscaLocal(&current, &dados); // Tenta melhorar o máximo possível a solução atual
-            if(melhorou(best.get_custo(), current.get_custo())){ // Se a solução atual foi melhorada a melhor solução atual é atualizada pela atual
+        while(iterIls <= maxIterILS){
+            BuscaLocal(&current, &dados);
+            if(melhorou(best.get_custo(), current.get_custo())){
+                // cout << "Solucao melhorou de " << best.get_custo() << " para " << current.get_custo() << endl;
                 best = current;
                 iterIls = 0;
             }
-            //current = Perturbacao(&best, &dados); // Pertuba de forma aleatória a solução atual pra ver se ao alterá-la é possível melhorá-la
+            current = Perturbacao(&best, &dados);
             iterIls++;
         }
 
-        if(melhorou(melhor_de_todas.get_custo(), best.get_custo())) // Se a melhor solução atual for melhor que a melhor solução possível, ela se torna a melhor solução possível
+        if(melhorou(melhor_de_todas.get_custo(), best.get_custo()))
             melhor_de_todas = best;
     }
 
@@ -70,4 +73,25 @@ void CVRP::solveILS(){
     cout << "\nTempo de execucao:  " << float_ms.count() / 1000.0000000000000 << " segundos" << "\n";
 
     melhor_solucao = melhor_de_todas;
+    calculaTudo();
+}
+
+void CVRP::calculaTudo(){
+    int custo_total = 0;
+    // Rotas
+    for (int i = 0; i < this->get_solution().get_rotas().size(); i++){
+        if(this->get_solution().get_rotas()[i].size() >2)
+            custo_total+=dados.get_r();
+        
+        for (int j = 0; j < this->get_solution().get_rotas()[i].size()-1; j++){
+            custo_total+= dados.get_custo(this->get_solution().get_rotas()[i][j], this->get_solution().get_rotas()[i][j+1]);
+        }
+    }
+
+    for (int i = 0; i < this->get_solution().get_clientes_terceirizados().size(); i++){
+        cout << "Custo de terceirizacao: " << dados.get_custos_terceirizacao()[this->get_solution().get_clientes_terceirizados()[i]-1] << endl;
+        custo_total+= dados.get_custos_terceirizacao()[this->get_solution().get_clientes_terceirizados()[i]-1];
+    }
+
+    cout << "CUSTO TOTAL RECALCULADO: " << custo_total << endl;
 }

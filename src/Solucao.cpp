@@ -44,11 +44,11 @@ void Solucao::removeDaRota(int rota, int index){
 
 void Solucao::info(){
 
-    cout << "Custo:  " << setprecision(2) << fixed << custo << endl;
+    cout << "\nCusto:  " << setprecision(2) << fixed << custo << endl;
 
     // Rotas
     for (int i = 0; i < this->rotas.size(); i++){
-        cout << "Rota do veiculo " << i+1 << ": ";
+        cout << "Rota " << i+1 << ": ";
         for (int j = 0; j < this->rotas[i].size(); j++){
             cout << this->rotas[i][j] << " ";
         }
@@ -73,7 +73,7 @@ void Solucao::info(){
     }
     else{
         // cout << "num_clientesTerceirizados = " << this->num_clientesTerceirizados << "\n";
-        cout << "Clientes terceirizados: ";
+        cout << "Terceirizados: ";
         for(int i = 0; i < this->clientes.size(); i++){
             if(clientes[i]->get_terceirizado())
                 cout << i+1 << " ";
@@ -82,12 +82,13 @@ void Solucao::info(){
     }
 
     if(todos_atendidos){
-        cout << "Todos clientes foram atendidos\n";
+        cout << "Todos clientes foram atendidos\n\n";
     }
     else{
         for(int i = 0; i < this->clientes.size(); i++){
             if(!clientes[i]->get_atendido())
                 cout << "Cliente " << i+1 << " nao foi atendido\n";
         }
+        cout << "\n";
     }
 }

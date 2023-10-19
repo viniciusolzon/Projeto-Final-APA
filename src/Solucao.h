@@ -37,8 +37,16 @@ class Solucao{
         vector<Cliente*> get_clientes(){return clientes;}
 
         vector<int> get_clientes_terceirizados(){return clientes_terceirizados;}
-        void terceirizaCliente(int cliente){this->clientes_terceirizados.push_back(cliente);}
-        void desterceirizaCliente(int cliente_index){this->clientes_terceirizados.erase(this->clientes_terceirizados.begin() + cliente_index);}
+
+        void terceirizaCliente(int cliente){
+            this->clientes_terceirizados.push_back(cliente);
+            this->num_clientesTerceirizados+=1;
+        }
+        void desterceirizaCliente(int cliente_index){
+                this->clientes_terceirizados.erase(this->clientes_terceirizados.begin() + cliente_index);
+                this->num_clientesTerceirizados-=1;
+        }
+
         int get_num_clientesTerceirizados(){return num_clientesTerceirizados;}
         void atualiza_num_clientesTerceirizados(int val){this->num_clientesTerceirizados = val;}
 

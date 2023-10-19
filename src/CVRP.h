@@ -7,7 +7,6 @@
 // Capacitaded Vehicle Routing Problem
 class CVRP{
     private:
-        // int maxIterILS; // caso decidirmos utilizar a meta-heurística ILS (Iterated Local Search), tenho ela fácil implementada já
         int maxIter;
         int maxIterILS;
         Data dados;
@@ -17,6 +16,7 @@ class CVRP{
         // Construtor da classe
         CVRP(Data dados){
             this->dados = dados;
+            this->maxIter = 50;
             this->maxIterILS = dados.get_n() >= 150 ? dados.get_n() / 2 : dados.get_n();
         }
         ~CVRP(){} // Destrutor da classe
@@ -66,6 +66,7 @@ class CVRP{
         void solveILS();
 
         void info();
+        void calculaTudo();
 };
 
 #endif
