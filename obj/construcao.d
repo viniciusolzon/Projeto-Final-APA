@@ -1,2 +1,2 @@
--MM
-src/construcao.cpp
+obj/construcao.o: src/construcao.cpp src/CVRP.h src/Data.h src/Solucao.h \
+ src/Cliente.h
