@@ -30,30 +30,6 @@ void CVRP::solve(){
     cout << endl;
     melhor_de_todas.info();
 
-    // cout << endl;
-    // cout << endl;
-    // cout << "Entrou na perturbacao";
-    // cout << endl;
-    // cout << endl;
-    // Solucao melhor_de_todas_teste(dados.get_Q(), dados.get_demandas(), dados.get_custos_terceirizacao(), dados.get_k()); // Cria a solução que guardará a melhor solução possível
-    // melhor_de_todas_teste = Perturbacao(&melhor_de_todas, &dados); // Tenta melhorar o máximo possível a solução
-    // cout << endl;
-    // cout << "Saiu da perturbacao";
-    // cout << endl;
-    // cout << endl;
-    // melhor_de_todas_teste.info();
-
-    // cout << endl;
-    // cout << endl;
-    // cout << "Entrou na busca local";
-    // cout << endl;
-    // cout << endl;
-    // BuscaLocal(&melhor_de_todas_teste, &dados); // Tenta melhorar o máximo possível a solução
-    // cout << endl;
-    // cout << "Saiu da busca local";
-    // cout << endl;
-    // cout << endl;
-    // melhor_de_todas_teste.info();
 
     auto end = std::chrono::high_resolution_clock::now(); // Para o cronômetro
     std::chrono::duration<double, std::milli> float_ms = end - start; // Calcula o tempo do cronômetro
@@ -69,10 +45,14 @@ void CVRP::solveILS(){
     srand(time(NULL)); // Para conseguir gerar números aleatórios
     Solucao melhor_de_todas(dados.get_Q(), dados.get_demandas(), dados.get_custos_terceirizacao(), dados.get_k()); // Cria a solução que guardará a melhor solução possível
 
-
     for(int i = 0; i < maxIter; i++){
-        Solucao current = Construcao(&dados);
         
+        Solucao current = Construcao(&dados);
+        cout << "depois da construcao:\n";
+        current.info();
+        calculaTudo(current);
+        getchar();
+
         Solucao best = current;
         if(i == 0)
             melhor_de_todas = current;
@@ -98,25 +78,25 @@ void CVRP::solveILS(){
     cout << "\nTempo de execucao:  " << float_ms.count() / 1000.0000000000000 << " segundos" << "\n";
 
     melhor_solucao = melhor_de_todas;
-    calculaTudo();
+    calculaTudo(melhor_solucao);
 }
 
-void CVRP::calculaTudo(){
+void CVRP::calculaTudo(Solucao s){
     int custo_total = 0;
     // Rotas
-    for (int i = 0; i < this->get_solution().get_rotas().size(); i++){
-        if(this->get_solution().get_rotas()[i].size() >2)
+    for (int i = 0; i < s.get_rotas().size(); i++){
+        if(s.get_rotas()[i].size() >2)
             custo_total+=dados.get_r();
         
-        for (int j = 0; j < this->get_solution().get_rotas()[i].size()-1; j++){
-            custo_total+= dados.get_custo(this->get_solution().get_rotas()[i][j], this->get_solution().get_rotas()[i][j+1]);
+        for (int j = 0; j < s.get_rotas()[i].size()-1; j++){
+            custo_total+= dados.get_custo(s.get_rotas()[i][j], s.get_rotas()[i][j+1]);
         }
     }
 
-    for (int i = 0; i < this->get_solution().get_clientes_terceirizados().size(); i++){
-        // cout << "Cliente " << this->get_solution().get_clientes_terceirizados()[i] << endl;
-        // cout << "Custo de terceirizacao: " << dados.get_custos_terceirizacao()[this->get_solution().get_clientes_terceirizados()[i]-1] << endl;
-        custo_total+= dados.get_custos_terceirizacao()[this->get_solution().get_clientes_terceirizados()[i]-1];
+    for (int i = 0; i < s.get_clientes_terceirizados().size(); i++){
+        // cout << "Cliente " << s.get_clientes_terceirizados()[i] << endl;
+        // cout << "Custo de terceirizacao: " << dados.get_custos_terceirizacao()[s.get_clientes_terceirizados()[i]-1] << endl;
+        custo_total+= dados.get_custos_terceirizacao()[s.get_clientes_terceirizados()[i]-1];
     }
 
     cout << "CUSTO TOTAL RECALCULADO: " << custo_total << endl;

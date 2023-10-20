@@ -1,1 +1,2 @@
-obj/Cliente.o: src/Cliente.cpp src/Cliente.h
+-MM
+src/Cliente.cpp

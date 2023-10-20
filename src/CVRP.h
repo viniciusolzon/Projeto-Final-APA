@@ -66,7 +66,7 @@ class CVRP{
         void solveILS();
 
         void info();
-        void calculaTudo();
+        void calculaTudo(Solucao s);
 };
 
 #endif

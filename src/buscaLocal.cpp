@@ -97,7 +97,7 @@ bool CVRP::melhorouReinsertion(Solucao *s, Data *d){
     }
     
     if(houve_melhora){
-        cout << "Houve melhora no reinsertion" << endl;
+        // cout << "Houve melhora no reinsertion" << endl;
     }
     else{
         // cout << "Nao houve melhora no reinsertion" << endl;
@@ -207,7 +207,7 @@ bool CVRP::melhorouSwap(Solucao *s, Data *d){
     }
 
     if(houve_melhora){
-        cout << "Houve melhora no swap" << endl;
+        // cout << "Houve melhora no swap" << endl;
     }
     else{
         // cout << "Nao houve melhora no swap" << endl;
@@ -219,10 +219,12 @@ bool CVRP::melhorouSwap(Solucao *s, Data *d){
 
 // 2-OPT
 int CVRP::calculaCusto2opt(Solucao *s, Data *d, int rota, int cliente1, int cliente2){
+    // falta fazer
     return 1;
 }
 
 bool CVRP::melhorou2opt(Solucao *s, Data *d){
+    // falta fazer
     return true;
 }
 
@@ -245,7 +247,7 @@ int CVRP::calculaCustoShift(Solucao *s, Data *d, int rota1, int rota2, int clien
     return custo;
 }
 
-bool CVRP::verificaCapacidadeRotas(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2){
+bool CVRP::verificaCapacidadeRotas(Solucao *s, Data *d, int rota1, int rota2, int cliente1, int cliente2){ // Verificado ta certo
     int capacidade1 = s->get_capacidadeRota(rota1);
     int capacidade2 = s->get_capacidadeRota(rota2);
 
@@ -255,7 +257,11 @@ bool CVRP::verificaCapacidadeRotas(Solucao *s, Data *d, int rota1, int rota2, in
     int demanda2 = s->get_clientes()[cliente2-1]->get_demanda();
 
     // Tira o cliente da rota dele e coloca o outro cliente da outra rota e verifica se a capacidade n será excedida
-    if ((capacidade1 + demanda1 - demanda2) < 0 || (capacidade2 + demanda2 - demanda1) < 0){
+    if((capacidade1 + demanda1 - demanda2) < 0){
+        // Não dá pra aplicar o shift
+        return true;
+    }
+    if((capacidade2 + demanda2 - demanda1) < 0){
         // Não dá pra aplicar o shift
         return true;
     }
@@ -274,7 +280,7 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
     int melhor_rota1, melhor_rota2;
     bool capacidade_excedida = false;
     bool houve_melhora = false;
-    
+
     // Passamos por todas as rotas pra tentar o shift
     for(int rota1_escolhida = 0; rota1_escolhida < qtd_rotas-1; rota1_escolhida++){
 
@@ -288,8 +294,11 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
                     // verificar se a capacidade de nenhuma das rota será excedida ao trocar os clientes
                     capacidade_excedida = verificaCapacidadeRotas(s, d, rota1_escolhida, rota2_escolhida, i, j);
                     // Se a capacidade de alguma das rotas for excedida, tentamos trocar outra troca entre clientes
-                    if(capacidade_excedida)
+                    if(capacidade_excedida){
+                        // cout << "Nao da pra trocar, capacidade será excedida\n";
                         continue;
+                    }
+                    // cout << "Da pra trocar\n";
 
                     // Se não, verificamos se vale a pena trocar eles baseado no custo das rotas
                     custo = calculaCustoShift(s, d, rota1_escolhida, rota2_escolhida, i, j);
@@ -362,7 +371,7 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
     }
 
     if(houve_melhora){
-        cout << "Houve melhora no shift" << endl;
+        // cout << "Houve melhora no shift" << endl;
     }
     else{
         // cout << "Nao houve melhora no shift" << endl;
@@ -490,7 +499,7 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){ // Verificado ta certo
     }
 
     if(houve_melhora){
-        cout << "Houve melhora na terceirizacao" << endl;
+        // cout << "Houve melhora na terceirizacao" << endl;
         // getchar();
         // cout << "Custo após melhora: " << s->get_custo() << endl;
     }
@@ -660,7 +669,7 @@ bool CVRP::melhorouDesterceirizacao(Solucao *s, Data *d){ // Verificado ta certo
     }
 
     if(houve_melhora){
-        cout << "Houve melhora na desterceirizacao" << endl;
+        // cout << "Houve melhora na desterceirizacao" << endl;
         // getchar();
         // cout << "Custo após melhora: " << s->get_custo() << endl;
     }
@@ -680,7 +689,11 @@ void CVRP::BuscaLocal(Solucao *s, Data *d){
         int n = rand() % NL.size();
         switch(NL[n]){
             case 1:
+                cout << "antes do reinsertion:\n";
+                s->info();
                 improved = melhorouReinsertion(s, d);
+                calculaTudo(*s);
+                getchar();
                 break;
             case 2:
                 improved = melhorouSwap(s, d);
