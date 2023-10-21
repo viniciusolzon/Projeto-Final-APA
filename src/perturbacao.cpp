@@ -5,12 +5,6 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
     Solucao s_copy;
     s_copy = *s;
 
-    // cout << endl << "ENTROU NA PERTURBACAO" << endl << endl;
-    // s_copy.info();
-    // for(int z=0; z< s_copy.get_rotas().size();z++){
-    //     cout << "Capacidade da rota " << z+1 << " = " << s_copy.get_capacidadeRota(z) << endl;
-    // }
-
     int qtd_rotas = s_copy.get_rotas().size();
     int rota_escolhida = 0;
     int tamanho_da_rota = 0;
@@ -19,56 +13,61 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
     int j = 0;
     int n = 0;
     
+    // Primeiro precisa verificar se tem 2 clientes não terceirizados em uma rota só pra aplicar o swap aleatório
+    bool viavel = false;
+    for(int rota = 0; rota < s_copy.get_rotas().size(); rota++){
+        tamanho_da_rota = s_copy.get_rotas()[rota].size();
 
-    // APLICA N SWAPS ALEATÓRIOS
-    // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) swaps aleatórios
-    // (n) é um número aleatório entre 1 e 3
-    n = (rand() % 3) + 1;
-
-    for(int t = 0; t < n; t++){
-
-        // Escolha da rota aleatória
-        while(true){
-            rota_escolhida = rand() % qtd_rotas;
-            tamanho_da_rota = s_copy.get_rotas()[rota_escolhida].size();
-            
-            // Pra aplicar o swap a rota precisa ter no mínimo 2 clientes, (4 pq tem a ida e volta do depósito)
-            if(tamanho_da_rota >= 4)
-                break;
-        }
-
-        // Escolha do primeiro cliente aleatório
-        i = std::max(1, rand() % tamanho_da_rota-1);
-
-        // Escolha do segundo cliente aleatório
-        while(true){
-
-            j = std::max(1, rand() % tamanho_da_rota-1);
-            if(j != i)
-                break;
-        }
-
-        // Calcula o custo do swap aleatório
-        custo = 0;
-        custo = calculaCustoSwap(&s_copy, d, rota_escolhida, i, j);
-        
-        // se ele faz um swap que melhore a solução na primeira iteração ta errado, pq a busca local deveria ter achado isso
-        if(custo < 0 && t == 0){
-            cout << "BUSCA LOCAL N ACHOU ESSA MELHORIA DO SWAP" << endl;
-            cout << "rota escolhida = " << rota_escolhida+1 << endl;
-            cout << "i escolhido = " << i << endl;
-            cout << "j escolhido = " << j << endl;
-            getchar();
-        }
-        
-        // Aplica o swap aleatório com a possibilidade dele piorar a solução
-        int aux = s_copy.get_rotas()[rota_escolhida][i];
-        s_copy.atualizaRota(rota_escolhida, i, s_copy.get_rotas()[rota_escolhida][j]);
-        s_copy.atualizaRota(rota_escolhida, j, aux);
-        s_copy.atualiza_custo(s_copy.get_custo() + custo);
-        
+        // Pra aplicar o swap a rota precisa ter no mínimo 2 clientes, (4 pq tem a ida e volta do depósito)
+        if(tamanho_da_rota >= 4)
+            viavel = true;
     }
 
+
+    if(viavel){
+            
+        // APLICA N SWAPS ALEATÓRIOS
+        // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) swaps aleatórios
+        // (n) é um número aleatório entre 1 e 3
+        n = (rand() % 3) + 1;
+
+        for(int t = 0; t < n; t++){
+
+            // Escolha da rota aleatória
+            while(true){
+                rota_escolhida = rand() % qtd_rotas;
+                tamanho_da_rota = s_copy.get_rotas()[rota_escolhida].size();
+                
+
+                // Pra aplicar o swap a rota precisa ter no mínimo 2 clientes, (4 pq tem a ida e volta do depósito)
+                if(tamanho_da_rota >= 4)
+                    break;
+            }
+
+            // Escolha do primeiro cliente aleatório
+            i = std::max(1, rand() % tamanho_da_rota-1);
+
+            // Escolha do segundo cliente aleatório
+            while(true){
+
+                j = std::max(1, rand() % tamanho_da_rota-1);
+                if(j != i)
+                    break;
+            }
+
+            // Calcula o custo do swap aleatório
+            custo = 0;
+            custo = calculaCustoSwap(&s_copy, d, rota_escolhida, i, j);
+            
+            // Aplica o swap aleatório com a possibilidade dele piorar a solução
+            int aux = s_copy.get_rotas()[rota_escolhida][i];
+            s_copy.atualizaRota(rota_escolhida, i, s_copy.get_rotas()[rota_escolhida][j]);
+            s_copy.atualizaRota(rota_escolhida, j, aux);
+            s_copy.atualiza_custo(s_copy.get_custo() + custo);
+            
+        }
+    }
+    
 
     // Precisa ter ao menos 2 rotas pra aplicar o shift
     int qtd_rotas_nao_vazias = 0;
@@ -90,7 +89,6 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
         custo = 0;
         i = 0;
         j = 0;
-
 
         for(int t = 0; t < n; t++){
 
@@ -153,7 +151,6 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
             s_copy.atualizaCapacidade(rota_escolhida1, nova_capacidade_rota1);
             s_copy.atualizaCapacidade(rota_escolhida2, nova_capacidade_rota2);
 
-
             // Calcula o custo do shift aleatório
             custo = calculaCustoShift(&s_copy, d, rota_escolhida1, rota_escolhida2, i, j);
             
@@ -166,13 +163,60 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
     }
 
 
+    // APLICA N TERCEIRZAÇÕES ALEATÓRIAS
+    // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) terceirizações aleatórios
+    // (n) é um número aleatório entre 1 e 3
+    n = (rand() % 3) + 1;
 
-    // cout << endl << "SAIU DA PERTURBACAO" << endl << endl;
-    // s_copy.info();
-    // for(int z=0; z< s_copy.get_rotas().size();z++){
-    //     cout << "Capacidade da rota " << z+1 << " = " << s_copy.get_capacidadeRota(z) << endl;
-    // }
+    for(int t = 0; t < n; t++){
 
+        // Escolha da rota aleatória
+        while(true){
+            rota_escolhida = rand() % qtd_rotas;
+            tamanho_da_rota = s_copy.get_rotas()[rota_escolhida].size();
+            
+            // Pra aplicar o terceirização a rota precisa ter no mínimo 1 cliente, (3 pq tem a ida e volta do depósito)
+            if(tamanho_da_rota >= 3)
+                break;
+        }
+
+        // Escolha do cliente aleatório
+        i = std::max(1, rand() % tamanho_da_rota-1);
+
+        // Antes de calcular o custo da terceirização do cliente, é preciso verificar
+        // se dá pra terceirizar respeitando o limite mínimo L de entregas não terceirizadas
+        bool limite_respeitado = false;
+        limite_respeitado = verificaLimiteL(&s_copy, d);
+        if(!limite_respeitado){
+            continue;
+        }
+
+        // Calcula o custo da terceirização aleatória
+        custo = 0;
+        custo = calculaCustoTerceirizacao(&s_copy, d, rota_escolhida, i);
+        
+        // Aplica a terceirizacao aleatória com a possibilidade dela piorar a solução
+        int cliente = s_copy.get_rotas()[rota_escolhida][i];
+        int demanda_cliente = s_copy.get_clientes()[cliente-1]->get_demanda();
+        int capacidade_rota = s_copy.get_capacidadeRota(rota_escolhida);
+        // retirar o cliente da rota 
+        int nova_capacidade_rota = capacidade_rota + demanda_cliente;
+
+        // atualiza a capacidade da rota após a alteração
+        s_copy.atualizaCapacidade(rota_escolhida, nova_capacidade_rota);
+
+        s_copy.terceirizaCliente(cliente);
+
+        s_copy.removeDaRota(rota_escolhida, i);
+        s_copy.atualiza_custo(s_copy.get_custo() + custo);
+
+        // Se o segundo 'cliente' da rota agora for um zero, quer dizer que a rota está vazia,
+        // então diminuimos a quantidade de veiculos utilizados
+        if(s_copy.get_rotas()[rota_escolhida][1] == 0){
+            s_copy.atualiza_custo(s_copy.get_custo() - d->get_r());
+        }
+
+    }
 
     return s_copy;
 }

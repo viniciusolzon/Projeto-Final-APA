@@ -58,14 +58,12 @@ class CVRP{
         int calculaCustoDesterceirizacao(Solucao *s, Data *d, int rota, int posicao, int cliente);
         bool melhorouDesterceirizacao(Solucao *s, Data *d);
 
-
         // Funções para a perturbação
         Solucao Perturbacao(Solucao *s, Data *d); // A heurística construtiva utilizada será a do 'vizinho mais pŕoximo'
 
         void solve();
         void solveILS();
 
-        void info();
         void calculaTudo(Solucao s);
 };
 

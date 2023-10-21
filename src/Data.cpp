@@ -32,9 +32,6 @@ void Data::readData(int argc, char **argv){
         this->custos_terceirizacao.push_back(custo_terceirizacao);
     }
 
-    // Aqui embaixo é n+1 pq tem o depósito além dos clientes
-    // vector<vector<int>> matrizAdj(n+1, vector<int>(n+1));
-
     // Aloca memória p matriz
     matrizAdj = new int*[n+1];
 

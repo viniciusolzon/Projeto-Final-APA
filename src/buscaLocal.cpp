@@ -354,9 +354,15 @@ bool CVRP::verificaLimiteL(Solucao *s, Data *d){ // Verificado ta certo
     // A quantidade de clientes não terceirizados tem que ser maior do que o limite L
     // Tem q ser MAIOR pq se for igual ao terceirizar a qtd de clientes não terceirizados
     // vai ser menos do que o limite L
-    if(d->get_n() - s->get_num_clientesTerceirizados() > d->get_L())
+    // cout << "Numero de clientes: " << d->get_n() << endl;
+    // cout << "Numero de clientes terceirizados: " << s->get_num_clientesTerceirizados() << endl;
+    // cout << "Quantidade minima de entregas nao terceirizadas: " << d->get_L() << endl;
+    if(d->get_n() - s->get_num_clientesTerceirizados() > d->get_L()){
+        // cout << "Da pra terceirizar" << endl;
         return true;
+    }
     
+    // cout << "Nao da pra terceirizar" << endl;
     return false;
 }
 
@@ -418,7 +424,7 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){ // Verificado ta certo
         int nova_capacidade_rota = capacidade_rota + demanda_cliente;
 
 
-        // atualiza a capacidade das 2 rotas após a alteração
+        // atualiza a capacidade da rota após a alteração
         s->atualizaCapacidade(melhor_rota, nova_capacidade_rota);
 
         s->terceirizaCliente(cliente);
@@ -426,8 +432,8 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){ // Verificado ta certo
         s->removeDaRota(melhor_rota, melhor_terceirizacao);
         s->atualiza_custo(s->get_custo() + melhor_custo);
 
-        // Se o segundo 'cliente' da rota iremos retirar for um zero, quer dizer que a rota está vazia,
-        //  então diminuimos a quantidade de veiculos utilizados
+        // Se o segundo 'cliente' da rota agora for um zero, quer dizer que a rota está vazia,
+        // então diminuimos a quantidade de veiculos utilizados
         if(s->get_rotas()[melhor_rota][1] == 0){
             s->atualiza_custo(s->get_custo() - d->get_r());
         }
@@ -577,7 +583,6 @@ void CVRP::BuscaLocal(Solucao *s, Data *d){
                 break;
             case 4:
                 improved = melhorouTerceirizacao(s, d);
-
                 break;
             case 5:
                 improved = melhorouDesterceirizacao(s, d);

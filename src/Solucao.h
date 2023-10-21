@@ -14,8 +14,8 @@ class Solucao{
         double custo; // custo total da solucao
         vector<vector<int>> rotas; // vector de vector de rotas, cada vector vai conter uma rota
         vector<int> capacidadeRotas; // vector que guarda a capacidade das rotas, vc pega pelo índice
+        // vector<int> clientes;
         vector<Cliente*> clientes;
-        // vector<Cliente*> clientes_terceirizados;
         vector<int> clientes_terceirizados;
         int num_clientes_terceirizados;
         int num_veiculos_utilizados;

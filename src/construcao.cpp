@@ -16,15 +16,12 @@ Solucao CVRP::Construcao(Data *dados){
         while(capacidadeAtual > 0){
             
             int proximo = vizinhoMaisProximo(atual, &solucao_atual, dados, capacidadeAtual);
-            // cout << "   Cliente mais próximo do " << atual << " é " << proximo << " com custo " <<
-            // dados->get_custo(atual, proximo) << " e demanda " <<  solucao_atual.get_clientes()[proximo- 1]->get_demanda() << endl;
             
             if(proximo){
                 if (capacidadeAtual - solucao_atual.get_clientes()[proximo - 1]->get_demanda() >= 0){  // Verifica se a capacidade não é excedida
                     
                     solucao_atual.get_clientes()[proximo - 1]->set_atendido(true);
 
-                    // cout << "   Capacidade atual do veículo: " << capacidadeAtual << endl;
                     capacidadeAtual -= solucao_atual.get_clientes()[proximo -1]->get_demanda();
                 
                     // Ao inserir o cliente na rota já podemos calcular o custo dele aqui
@@ -39,12 +36,10 @@ Solucao CVRP::Construcao(Data *dados){
                     atual = proximo;
                 }
                 else{
-                    // cout << "   Capacidade do veiculo atual excedida, retorna ao deposito\n\n";
                     break;  // Se a capacidade for excedida, o veículo retorna ao depósito
                 }
             }
             else{
-                // cout << "   Sem cliente proximo, o veiculo retorna ao deposito\n\n";
                 break;  // Se não houver cliente próximo, o veículo retorna ao depósito
             }
         }

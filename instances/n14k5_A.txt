@@ -23,19 +23,3 @@
   29    9   68   66   97   79   46   20   89   97  100  103    0   31   38 
   52   23   40   39   74   85   27   14   71   84  100   81   31    0   42 
   28   39   56   53   71   44   30   31   59   63   63   75   38   42    0 
-
-antes da terceirizacao:
-Custo:  683.00
-Rota 1: 0 6 3 2 4 8 14 0 = 223
-Rota 2: 0 12 1 7 0 = 89
-Rota 3: 0 5 0 = 110
-Terceirizados: 13 11 9 10 = 12+20+38+50 = 120
-total = 683
-
-depois da terceirizacao:
-Custo:  591.00
-Rota 1: 0 6 3 2 4 8 14 0 = 223
-Rota 2: 0 12 1 7 0 = 89
-Terceirizados: 13 11 9 10 5 = 138
-total = 544 (ele ta calculando um veículo usado a mais)
-CUSTO TOTAL RECALCULADO: 544

@@ -11,7 +11,6 @@ int main(int argc, char *argv[]){
 
     Data dados;
     dados.readData(argc, argv);
-    // dados.info();
 
     CVRP problema(dados);
     if(argc == 2)

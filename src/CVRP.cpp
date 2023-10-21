@@ -48,10 +48,6 @@ void CVRP::solveILS(){
     for(int i = 0; i < maxIter; i++){
         
         Solucao current = Construcao(&dados);
-        // cout << "depois da construcao:\n";
-        // current.info();
-        // calculaTudo(current);
-        // getchar();
 
         Solucao best = current;
         if(i == 0)
@@ -59,17 +55,18 @@ void CVRP::solveILS(){
 
         int iterIls = 0;
         while(iterIls <= maxIterILS){
+            // cout << "Entrou na busca local" << endl;
             BuscaLocal(&current, &dados);
+            // cout << "Saiu da busca local" << endl;
             if(melhorou(best.get_custo(), current.get_custo())){
-                // cout << "Solucao melhorou de " << best.get_custo() << " para " << current.get_custo() << endl;
                 best = current;
                 iterIls = 0;
             }
             current = Perturbacao(&best, &dados);
             iterIls++;
         }
-
         if(melhorou(melhor_de_todas.get_custo(), best.get_custo()))
+            // cout << "Solucao melhorou de " << melhor_de_todas.get_custo() << " para " << best.get_custo() << endl;
             melhor_de_todas = best;
     }
 
@@ -78,7 +75,6 @@ void CVRP::solveILS(){
     cout << "\nTempo de execucao:  " << float_ms.count() / 1000.0000000000000 << " segundos" << "\n";
 
     melhor_solucao = melhor_de_todas;
-    // calculaTudo(melhor_solucao);
 }
 
 void CVRP::calculaTudo(Solucao s){
