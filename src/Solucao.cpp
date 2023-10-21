@@ -3,7 +3,7 @@
 Solucao::Solucao(int capacidades, vector<int> demandas, vector<int> custos_terceirizacao, int k){
 
     this->custo = 0;
-    this->num_clientesTerceirizados = 0;
+    this->num_clientes_terceirizados = 0;
     // Inicializa os clientes
     for(int i = 0; i < demandas.size(); i++){
         Cliente *novo_cliente = new Cliente(demandas[i], custos_terceirizacao[i]);

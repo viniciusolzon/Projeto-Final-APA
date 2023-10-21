@@ -9,7 +9,6 @@ Solucao CVRP::Construcao(Data *dados){
     int veiculo_usado = 0;
 
     for(int veiculoAtual = 1; veiculoAtual <= qtd_veiculos; veiculoAtual++){
-        int veiculo_usado = 0;
         // cout << "Construindo rota para o veículo " << veiculoAtual << endl;
         int capacidadeAtual = dados->get_Q();
         int atual = 0;
@@ -55,11 +54,12 @@ Solucao CVRP::Construcao(Data *dados){
         solucao_atual.atualiza_custo(solucao_atual.get_custo() + dados->get_custo(atual, 0));
 
         // Se a rota do veiculo atual possui mais de um vértice nela (já começa com o 0 que é o depósito)
-        if(solucao_atual.get_rotas()[veiculoAtual-1].size()>1)
+        if(solucao_atual.get_rotas()[veiculoAtual-1].size()>2)
             veiculo_usado++;
-        // Soma o custo de uso de um veiculo
-        solucao_atual.atualiza_custo(solucao_atual.get_custo() + (veiculo_usado * dados->get_r()));
     }
+
+    // Soma o custo de uso de um veiculo
+    solucao_atual.atualiza_custo(solucao_atual.get_custo() + (veiculo_usado * dados->get_r()));
 
     // Não precisa mais calcular o custo da rota aqui pq ele ta sendo calculado dentro da construção
     // calcularCustoTotal(&solucao_atual, *dados);

@@ -48,10 +48,10 @@ void CVRP::solveILS(){
     for(int i = 0; i < maxIter; i++){
         
         Solucao current = Construcao(&dados);
-        cout << "depois da construcao:\n";
-        current.info();
-        calculaTudo(current);
-        getchar();
+        // cout << "depois da construcao:\n";
+        // current.info();
+        // calculaTudo(current);
+        // getchar();
 
         Solucao best = current;
         if(i == 0)
@@ -78,7 +78,7 @@ void CVRP::solveILS(){
     cout << "\nTempo de execucao:  " << float_ms.count() / 1000.0000000000000 << " segundos" << "\n";
 
     melhor_solucao = melhor_de_todas;
-    calculaTudo(melhor_solucao);
+    // calculaTudo(melhor_solucao);
 }
 
 void CVRP::calculaTudo(Solucao s){
@@ -87,17 +87,22 @@ void CVRP::calculaTudo(Solucao s){
     for (int i = 0; i < s.get_rotas().size(); i++){
         if(s.get_rotas()[i].size() >2)
             custo_total+=dados.get_r();
-        
+        int custo_rota = 0;
         for (int j = 0; j < s.get_rotas()[i].size()-1; j++){
+            custo_rota+= dados.get_custo(s.get_rotas()[i][j], s.get_rotas()[i][j+1]);
             custo_total+= dados.get_custo(s.get_rotas()[i][j], s.get_rotas()[i][j+1]);
         }
+        // cout << "Custo da rota " << i+1 << " = " << custo_rota << endl;
     }
 
+    int custos_terceirizacao = 0;
     for (int i = 0; i < s.get_clientes_terceirizados().size(); i++){
+        custos_terceirizacao+= dados.get_custos_terceirizacao()[s.get_clientes_terceirizados()[i]-1];
         // cout << "Cliente " << s.get_clientes_terceirizados()[i] << endl;
         // cout << "Custo de terceirizacao: " << dados.get_custos_terceirizacao()[s.get_clientes_terceirizados()[i]-1] << endl;
         custo_total+= dados.get_custos_terceirizacao()[s.get_clientes_terceirizados()[i]-1];
     }
 
+    // cout << "Custo das terceirizacoes = " << custos_terceirizacao << endl;
     cout << "CUSTO TOTAL RECALCULADO: " << custo_total << endl;
 }

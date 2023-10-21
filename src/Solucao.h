@@ -17,7 +17,8 @@ class Solucao{
         vector<Cliente*> clientes;
         // vector<Cliente*> clientes_terceirizados;
         vector<int> clientes_terceirizados;
-        int num_clientesTerceirizados;
+        int num_clientes_terceirizados;
+        int num_veiculos_utilizados;
     public:
         Solucao(int capacidades, vector<int> demandas, vector<int> custos_terceirizacao, int k);
         Solucao(){}
@@ -40,15 +41,18 @@ class Solucao{
 
         void terceirizaCliente(int cliente){
             this->clientes_terceirizados.push_back(cliente);
-            this->num_clientesTerceirizados+=1;
+            this->num_clientes_terceirizados+=1;
         }
         void desterceirizaCliente(int cliente_index){
                 this->clientes_terceirizados.erase(this->clientes_terceirizados.begin() + cliente_index);
-                this->num_clientesTerceirizados-=1;
+                this->num_clientes_terceirizados-=1;
         }
 
-        int get_num_clientesTerceirizados(){return num_clientesTerceirizados;}
-        void atualiza_num_clientesTerceirizados(int val){this->num_clientesTerceirizados = val;}
+        int get_num_clientesTerceirizados(){return num_clientes_terceirizados;}
+        void atualiza_num_clientesTerceirizados(int val){this->num_clientes_terceirizados = val;}
+
+        int get_num_veiculosUtilizados(){return num_veiculos_utilizados;}
+        void atualiza_num_clientesUtilizados(int val){this->num_veiculos_utilizados = val;}
 
         void info();
 };

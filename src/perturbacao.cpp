@@ -165,6 +165,8 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
         }
     }
 
+
+
     // cout << endl << "SAIU DA PERTURBACAO" << endl << endl;
     // s_copy.info();
     // for(int z=0; z< s_copy.get_rotas().size();z++){
