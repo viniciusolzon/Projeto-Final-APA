@@ -7,6 +7,7 @@ Solucao CVRP::Construcao(Data *dados){
     int veiculoAtual = 1;
     int qtd_veiculos = dados->get_k();
     int veiculo_usado = 0;
+    vector<bool> clientes_atendidos(dados->get_n(), false);
 
     for(int veiculoAtual = 1; veiculoAtual <= qtd_veiculos; veiculoAtual++){
         // cout << "Construindo rota para o veículo " << veiculoAtual << endl;
@@ -15,14 +16,19 @@ Solucao CVRP::Construcao(Data *dados){
         
         while(capacidadeAtual > 0){
             
-            int proximo = vizinhoMaisProximo(atual, &solucao_atual, dados, capacidadeAtual);
+            int proximo = vizinhoMaisProximo(atual, &solucao_atual, dados, capacidadeAtual, clientes_atendidos);
             
             if(proximo){
-                if (capacidadeAtual - solucao_atual.get_clientes()[proximo - 1]->get_demanda() >= 0){  // Verifica se a capacidade não é excedida
+                // Verifica se a capacidade não é excedida
+                // if (capacidadeAtual - solucao_atual.get_clientes()[proximo - 1]->get_demanda() >= 0){
+                // Verifica se a capacidade não é excedida
+                if (capacidadeAtual - dados->get_demandas()[proximo - 1] >= 0){
                     
-                    solucao_atual.get_clientes()[proximo - 1]->set_atendido(true);
+                    // solucao_atual.get_clientes()[proximo - 1]->set_atendido(true);
+                    clientes_atendidos[proximo - 1] = true;
 
-                    capacidadeAtual -= solucao_atual.get_clientes()[proximo -1]->get_demanda();
+                    // capacidadeAtual -= solucao_atual.get_clientes()[proximo -1]->get_demanda();
+                    capacidadeAtual -= dados->get_demandas()[proximo - 1];
                 
                     // Ao inserir o cliente na rota já podemos calcular o custo dele aqui
                     // Pra não precisar iterar sobre todos os clientes e calcular esse custo dps
@@ -57,19 +63,19 @@ Solucao CVRP::Construcao(Data *dados){
     solucao_atual.atualiza_custo(solucao_atual.get_custo() + (veiculo_usado * dados->get_r()));
 
     // Não precisa mais calcular o custo da rota aqui pq ele ta sendo calculado dentro da construção
-    // calcularCustoTotal(&solucao_atual, *dados);
     return solucao_atual;
 }
 
 // Função para encontrar o cliente mais próximo que ainda não foi atendido e que pode ser atendido pelo veículo atual.
-int CVRP::vizinhoMaisProximo(int atual, Solucao *solucao, Data *dados, int capacidadeAtual){
+int CVRP::vizinhoMaisProximo(int atual, Solucao *solucao, Data *dados, int capacidadeAtual, vector<bool> clientes_atendidos){
     // Inicializa o custo mínimo como o maior valor possível.
     int INT_MAX = std::numeric_limits<int>::max();
     int minCusto = INT_MAX;
     int mais_proximo = 0; // Inicializa o índice do cliente mais próximo como 0.
 
     // Percorre todos os clientes para encontrar o mais próximo.
-    for (int i = 1; i <= solucao->get_clientes().size(); i++){
+    for (int i = 1; i <= dados->get_n(); i++){
+        
         // Pra não pegar a distância dele com ele mesmo, sempre vai ser a menor (0)
         if(i == atual)
             continue;
@@ -77,7 +83,7 @@ int CVRP::vizinhoMaisProximo(int atual, Solucao *solucao, Data *dados, int capac
         // Verifica se o cliente atual ainda não foi atendido, se sua demanda pode
         // ser atendida e se o custo para atendê-lo é menor que o custo mínimo
         // encontrado até agora.
-        if(!(solucao->get_clientes()[i-1]->get_atendido()) && solucao->get_clientes()[i-1]->get_demanda() <= capacidadeAtual && dados->get_custo(atual, i) < minCusto){
+        if(!(clientes_atendidos[i-1]) && dados->get_demandas()[i-1] <= capacidadeAtual && dados->get_custo(atual, i) < minCusto){
             minCusto = dados->get_custo(atual, i);
             mais_proximo = i;
         }

@@ -25,7 +25,7 @@ class CVRP{
 
         // Funções para a construção
         Solucao Construcao(Data *d); // A heurística construtiva utilizada será a do 'vizinho mais pŕoximo'
-        int vizinhoMaisProximo(int atual, Solucao *solucao, Data *d, int capacidadeAtual);
+        int vizinhoMaisProximo(int atual, Solucao *solucao, Data *d, int capacidadeAtual, vector<bool> clientes_atendidos);
 
         // Funções para a busca local
         double epsilon(double a, double b);
@@ -63,8 +63,7 @@ class CVRP{
 
         void solve();
         void solveILS();
-
-        void calculaTudo(Solucao s);
+        void gera_output();
 };
 
 #endif

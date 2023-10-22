@@ -1,4 +1,5 @@
 #include "CVRP.h"
+#include <fstream>  
 
 void CVRP::solve(){
     auto start = std::chrono::high_resolution_clock::now(); // Inicia o cronômetro
@@ -37,6 +38,7 @@ void CVRP::solve(){
 
     // Atribui a solução gerada aqui em cima ("melhor_de_todas") a Solucao ("melhor_solucao") da classe CVRP
     melhor_solucao = melhor_de_todas;
+    melhor_solucao.info();
 }
 
 
@@ -55,9 +57,7 @@ void CVRP::solveILS(){
 
         int iterIls = 0;
         while(iterIls <= maxIterILS){
-            // cout << "Entrou na busca local" << endl;
             BuscaLocal(&current, &dados);
-            // cout << "Saiu da busca local" << endl;
             if(melhorou(best.get_custo(), current.get_custo())){
                 best = current;
                 iterIls = 0;
@@ -75,30 +75,59 @@ void CVRP::solveILS(){
     cout << "\nTempo de execucao:  " << float_ms.count() / 1000.0000000000000 << " segundos" << "\n";
 
     melhor_solucao = melhor_de_todas;
+    melhor_solucao.info();
 }
 
-void CVRP::calculaTudo(Solucao s){
-    int custo_total = 0;
+void CVRP::gera_output(){
+
+    // Criando o caminho e nome do output
+    string output_instancia = this->dados.get_nome_instancia();
+    output_instancia.erase(output_instancia.length() - 4);
+    string caminho = "outputs";
+    output_instancia.replace(0, 9, caminho);
+
+    std::ofstream outfile(output_instancia + ".txt");
+
+    // Custo
+    outfile << this->melhor_solucao.get_custo() << "\n";
+
     // Rotas
-    for (int i = 0; i < s.get_rotas().size(); i++){
-        if(s.get_rotas()[i].size() >2)
-            custo_total+=dados.get_r();
-        int custo_rota = 0;
-        for (int j = 0; j < s.get_rotas()[i].size()-1; j++){
-            custo_rota+= dados.get_custo(s.get_rotas()[i][j], s.get_rotas()[i][j+1]);
-            custo_total+= dados.get_custo(s.get_rotas()[i][j], s.get_rotas()[i][j+1]);
+    int custo_roteamento = 0;
+    int veiculos_utilizados = 0;
+    for (int i = 0; i < this->melhor_solucao.get_rotas().size(); i++){
+        if(this->melhor_solucao.get_rotas()[i].size() > 2)
+            veiculos_utilizados++;
+        for (int j = 0; j < this->melhor_solucao.get_rotas()[i].size() - 1; j++){
+            custo_roteamento += this->dados.get_custo(this->melhor_solucao.get_rotas()[i][j],this->melhor_solucao.get_rotas()[i][j+1]);
         }
-        // cout << "Custo da rota " << i+1 << " = " << custo_rota << endl;
+    }
+    
+    // Custo do roteamento
+    outfile << custo_roteamento << "\n";
+    // Custo por veiculos utilizados
+    outfile << veiculos_utilizados * dados.get_r() << "\n";
+
+    // Clientes terceirizados
+    int custo_terceirizacao = 0;
+    for(int i = 0; i < this->melhor_solucao.get_clientes_terceirizados().size(); i++)
+        custo_terceirizacao+= dados.get_custos_terceirizacao()[this->melhor_solucao.get_clientes_terceirizados()[i]-1];
+
+    // Custo de terceirizacoes
+    outfile << custo_terceirizacao << "\n\n";
+
+    // Clientes terceirizados
+    for(int i = 0; i < this->melhor_solucao.get_clientes_terceirizados().size(); i++)
+        outfile << this->melhor_solucao.get_clientes_terceirizados()[i] << " ";
+    outfile << "\n\n";
+
+    // Rotas
+    outfile << this->melhor_solucao.get_rotas().size() << "\n";
+    for (int i = 0; i < this->melhor_solucao.get_rotas().size(); i++){
+        for (int j = 0; j < this->melhor_solucao.get_rotas()[i].size(); j++){
+            outfile << this->melhor_solucao.get_rotas()[i][j] << " ";
+        }
+    outfile << "\n";
     }
 
-    int custos_terceirizacao = 0;
-    for (int i = 0; i < s.get_clientes_terceirizados().size(); i++){
-        custos_terceirizacao+= dados.get_custos_terceirizacao()[s.get_clientes_terceirizados()[i]-1];
-        // cout << "Cliente " << s.get_clientes_terceirizados()[i] << endl;
-        // cout << "Custo de terceirizacao: " << dados.get_custos_terceirizacao()[s.get_clientes_terceirizados()[i]-1] << endl;
-        custo_total+= dados.get_custos_terceirizacao()[s.get_clientes_terceirizados()[i]-1];
-    }
-
-    // cout << "Custo das terceirizacoes = " << custos_terceirizacao << endl;
-    cout << "CUSTO TOTAL RECALCULADO: " << custo_total << endl;
+    outfile.close();
 }

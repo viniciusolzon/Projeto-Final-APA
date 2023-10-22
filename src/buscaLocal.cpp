@@ -252,8 +252,10 @@ bool CVRP::verificaCapacidadeRotas(Solucao *s, Data *d, int rota1, int rota2, in
 
     cliente1 = s->get_rotas()[rota1][cliente1];
     cliente2 = s->get_rotas()[rota2][cliente2];
-    int demanda1 = s->get_clientes()[cliente1-1]->get_demanda();
-    int demanda2 = s->get_clientes()[cliente2-1]->get_demanda();
+    // int demanda1 = s->get_clientes()[cliente1-1]->get_demanda();
+    int demanda1 = d->get_demandas()[cliente1-1];
+    // int demanda2 = s->get_clientes()[cliente2-1]->get_demanda();
+    int demanda2 = d->get_demandas()[cliente2-1];
 
     // Tira o cliente da rota dele e coloca o outro cliente da outra rota e verifica se a capacidade n será excedida
     if((capacidade1 + demanda1 - demanda2) < 0){
@@ -316,8 +318,10 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
 
         int cliente1 = s->get_rotas()[melhor_rota1][melhor_cliente1];
         int cliente2 = s->get_rotas()[melhor_rota2][melhor_cliente2];
-        int demanda_cliente1 = s->get_clientes()[cliente1-1]->get_demanda();
-        int demanda_cliente2 = s->get_clientes()[cliente2-1]->get_demanda();
+        // int demanda_cliente1 = s->get_clientes()[cliente1-1]->get_demanda();
+        int demanda_cliente1 = d->get_demandas()[cliente1-1];
+        // int demanda_cliente2 = s->get_clientes()[cliente2-1]->get_demanda();
+        int demanda_cliente2 = d->get_demandas()[cliente2-1];
         int capacidade_rota1 = s->get_capacidadeRota(melhor_rota1);
         int capacidade_rota2 = s->get_capacidadeRota(melhor_rota2);
         // retirar o cliente 1 da rota 1 e colocar o 2 no lugar dele
@@ -418,7 +422,8 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){ // Verificado ta certo
     if(melhor_custo < 0){
 
         int cliente = s->get_rotas()[melhor_rota][melhor_terceirizacao];
-        int demanda_cliente = s->get_clientes()[cliente-1]->get_demanda();
+        // int demanda_cliente = s->get_clientes()[cliente-1]->get_demanda();
+        int demanda_cliente = d->get_demandas()[cliente-1];
         int capacidade_rota = s->get_capacidadeRota(melhor_rota);
         // retirar o cliente da rota 
         int nova_capacidade_rota = capacidade_rota + demanda_cliente;
@@ -531,7 +536,8 @@ bool CVRP::melhorouDesterceirizacao(Solucao *s, Data *d){ // Verificado ta certo
     // Se desterceirizar algum cliente na rota atual é melhor para a solucao, já desterceirizamos aquele cliente
     if(melhor_custo < 0){
 
-        int demanda_cliente = s->get_clientes()[melhor_cliente-1]->get_demanda();
+        // int demanda_cliente = s->get_clientes()[melhor_cliente-1]->get_demanda();
+        int demanda_cliente = d->get_demandas()[melhor_cliente-1];
         int capacidade_rota = s->get_capacidadeRota(melhor_rota);
         // retirar o cliente da rota 
         int nova_capacidade_rota = capacidade_rota - demanda_cliente;

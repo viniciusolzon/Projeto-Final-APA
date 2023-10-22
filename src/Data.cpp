@@ -3,6 +3,9 @@
 void Data::readData(int argc, char **argv){
 
     string nomeArquivo = argv[1]; // Nome do arquivo de entrada
+    
+    this->nome_instancia = nomeArquivo;
+
     ifstream arquivo(nomeArquivo);
 
     // Abrindo o arquivo

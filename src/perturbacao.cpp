@@ -23,7 +23,7 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
             viavel = true;
     }
 
-
+    
     if(viavel){
             
         // APLICA N SWAPS ALEATÓRIOS
@@ -138,8 +138,10 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
 
             int cliente1 = s_copy.get_rotas()[rota_escolhida1][i];
             int cliente2 = s_copy.get_rotas()[rota_escolhida2][j];
-            int demanda_cliente1 = s_copy.get_clientes()[cliente1-1]->get_demanda();
-            int demanda_cliente2 = s_copy.get_clientes()[cliente2-1]->get_demanda();
+            // int demanda_cliente1 = s_copy.get_clientes()[cliente1-1]->get_demanda();
+            int demanda_cliente1 = d->get_demandas()[cliente1-1];
+            // int demanda_cliente2 = s_copy.get_clientes()[cliente2-1]->get_demanda();
+            int demanda_cliente2 = d->get_demandas()[cliente2-1];
             int capacidade_rota1 = s_copy.get_capacidadeRota(rota_escolhida1);
             int capacidade_rota2 = s_copy.get_capacidadeRota(rota_escolhida2);
             // retirar o cliente 1 da rota 1 e colocar o 2 no lugar dele
@@ -190,14 +192,14 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
         if(!limite_respeitado){
             continue;
         }
-
         // Calcula o custo da terceirização aleatória
         custo = 0;
         custo = calculaCustoTerceirizacao(&s_copy, d, rota_escolhida, i);
         
         // Aplica a terceirizacao aleatória com a possibilidade dela piorar a solução
         int cliente = s_copy.get_rotas()[rota_escolhida][i];
-        int demanda_cliente = s_copy.get_clientes()[cliente-1]->get_demanda();
+        // int demanda_cliente = s_copy.get_clientes()[cliente-1]->get_demanda();
+        int demanda_cliente = d->get_demandas()[cliente-1];
         int capacidade_rota = s_copy.get_capacidadeRota(rota_escolhida);
         // retirar o cliente da rota 
         int nova_capacidade_rota = capacidade_rota + demanda_cliente;

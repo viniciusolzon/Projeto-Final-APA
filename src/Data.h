@@ -13,6 +13,7 @@ using namespace std;
 
 class Data{
     private:
+        string nome_instancia;
         int n, k, Q, L, r;
         vector<int> demandas;
         vector<int> custos_terceirizacao;
@@ -20,6 +21,8 @@ class Data{
         int num_vertices; // qtd de vertices na instancia
 
     public:
+        string get_nome_instancia(){return nome_instancia;}
+
         int get_n(){return n;} // Número de entregas
         int get_k(){return k;} // Quantidade de veículos
         int get_Q(){return Q;} // Capacidade de cada veículo

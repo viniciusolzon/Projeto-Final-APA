@@ -17,7 +17,7 @@ int main(int argc, char *argv[]){
         problema.solve();
     else
         problema.solveILS();
+    
+    problema.gera_output();
         
-    problema.get_solution().info();
-
 }

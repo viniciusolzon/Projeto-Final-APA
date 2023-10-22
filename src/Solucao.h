@@ -1,7 +1,6 @@
 #ifndef SOLUCAO_H
 #define SOLUCAO_H
 
-#include "Cliente.h"
 #include <vector>
 #include <limits>
 #include <iostream>
@@ -14,19 +13,22 @@ class Solucao{
         double custo; // custo total da solucao
         vector<vector<int>> rotas; // vector de vector de rotas, cada vector vai conter uma rota
         vector<int> capacidadeRotas; // vector que guarda a capacidade das rotas, vc pega pelo índice
-        // vector<int> clientes;
-        vector<Cliente*> clientes;
+        int num_veiculos_utilizados;
+
+        vector<int> clientes;
+        int num_clientes;
         vector<int> clientes_terceirizados;
         int num_clientes_terceirizados;
-        int num_veiculos_utilizados;
     public:
-        Solucao(int capacidades, vector<int> demandas, vector<int> custos_terceirizacao, int k);
+        Solucao(int capacidades, vector<int> demandas, vector<int> custos_terceirizacao, int qtd_veiculos);
         Solucao(){}
         ~Solucao(){}
 
+        // Custo
         int get_custo(){return custo;}
         void atualiza_custo(int valor){this->custo = valor;}
 
+        // Rotas
         vector<vector<int>> get_rotas(){return rotas;}
         int get_capacidadeRota(int rota){return capacidadeRotas[rota];}
         void atualizaCapacidade(int rota, int capacidade){capacidadeRotas[rota] = capacidade;}
@@ -35,10 +37,17 @@ class Solucao{
         void insereNaRota(int rota, int index, int vertice);
         void removeDaRota(int rota, int index);
 
-        vector<Cliente*> get_clientes(){return clientes;}
+        // Clientes
+        vector<int> get_clientes(){return clientes;}
+        int get_num_clientes(){return num_clientes;}
+        void atualiza_num_clientes(int val){this->num_clientes = val;}
+        void adiciona_cliente(int cliente){this->clientes.push_back(cliente);}
+        void remove_cliente(int val){this->num_clientes = val;}
 
+        // Clientes terceirizados
         vector<int> get_clientes_terceirizados(){return clientes_terceirizados;}
-
+        int get_num_clientesTerceirizados(){return num_clientes_terceirizados;}
+        void atualiza_num_clientesTerceirizados(int val){this->num_clientes_terceirizados = val;}
         void terceirizaCliente(int cliente){
             this->clientes_terceirizados.push_back(cliente);
             this->num_clientes_terceirizados+=1;
@@ -48,12 +57,11 @@ class Solucao{
                 this->num_clientes_terceirizados-=1;
         }
 
-        int get_num_clientesTerceirizados(){return num_clientes_terceirizados;}
-        void atualiza_num_clientesTerceirizados(int val){this->num_clientes_terceirizados = val;}
-
+        // Veiculos utilizados
         int get_num_veiculosUtilizados(){return num_veiculos_utilizados;}
         void atualiza_num_clientesUtilizados(int val){this->num_veiculos_utilizados = val;}
 
+        // Informações da solução
         void info();
 };
 
