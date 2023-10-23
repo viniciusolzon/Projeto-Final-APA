@@ -34,11 +34,13 @@ void gera_tabela(){
 
         double gapConstrucao = ( (problema.get_solution().valorConstrucao - valores_otimos[i]) * 100) / valores_otimos[i];
         double gapRVND = ( (problema.get_solution().valorRVND - valores_otimos[i]) * 100) / valores_otimos[i];
-
+        
+        string instancia = dados.get_nome_instancia();
+        instancia.erase(0,10);
         // Escrever os resultados no arquivo CSV.
-        arquivoCSV << dados.get_nome_instancia() << "," << valores_otimos[i] << "," << problema.get_solution().valorConstrucao << "," 
-                << problema.get_solution().tempoConstrucao << "," << gapConstrucao << "," << problema.get_solution().valorRVND << ","
-                << problema.get_solution().tempoRVND << "," << gapRVND << "\n";
+        arquivoCSV << instancia << "," << valores_otimos[i] << "," << problema.get_solution().valorConstrucao << "," 
+                << problema.get_solution().tempoConstrucao << "," << gapConstrucao << "%," << problema.get_solution().valorRVND << ","
+                << problema.get_solution().tempoRVND << "," << gapRVND << "%\n";
 
     }
     // Fechar o arquivo CSV.
