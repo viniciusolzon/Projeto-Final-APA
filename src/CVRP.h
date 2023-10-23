@@ -64,6 +64,7 @@ class CVRP{
         void solve();
         void solveILS();
         void gera_output();
+        void gera_tabela();
 };
 
 #endif

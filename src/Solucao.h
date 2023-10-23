@@ -20,6 +20,11 @@ class Solucao{
         vector<int> clientes_terceirizados;
         int num_clientes_terceirizados;
     public:
+        int valorConstrucao;
+        double tempoConstrucao;
+        int valorRVND;
+        double tempoRVND;
+
         Solucao(int capacidades, vector<int> demandas, vector<int> custos_terceirizacao, int qtd_veiculos);
         Solucao(){}
         ~Solucao(){}

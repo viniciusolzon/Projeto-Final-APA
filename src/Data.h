@@ -33,7 +33,7 @@ class Data{
         int **get_matrizAdj(){return matrizAdj;}
         int get_custo(int i, int j){return matrizAdj[i][j];}
         
-        void readData(int argc, char **argv);
+        void readData(string filename);
         void info();
         
 };
