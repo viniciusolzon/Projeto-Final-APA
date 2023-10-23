@@ -47,6 +47,8 @@ void Solucao::info(){
 
     // Rotas
     for (int i = 0; i < this->rotas.size(); i++){
+        if(this->rotas[i].size() <=2)
+            continue;
         cout << "Rota " << i+1 << ": ";
         for (int j = 0; j < this->rotas[i].size(); j++){
             cout << this->rotas[i][j] << " ";

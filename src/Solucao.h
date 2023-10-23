@@ -4,7 +4,9 @@
 #include <vector>
 #include <limits>
 #include <iostream>
+#include <algorithm>
 #include <iomanip>
+#include <cmath>
 
 using namespace std;
 
@@ -43,6 +45,7 @@ class Solucao{
         void atualizaRota(int rota, int index, int novo_vertice);
         void insereNaRota(int rota, int index, int vertice);
         void removeDaRota(int rota, int index);
+        void inverteRota(int rota, int inicio, int fim){reverse(this->rotas[rota].begin() + inicio, this->rotas[rota].begin() + fim + 1);}
 
         // Clientes
         vector<int> get_clientes(){return clientes;}

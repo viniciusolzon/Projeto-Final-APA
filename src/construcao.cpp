@@ -8,34 +8,42 @@ Solucao CVRP::Construcao(Data *dados){
     int qtd_veiculos = dados->get_k();
     int veiculo_usado = 0;
     vector<bool> clientes_atendidos(dados->get_n(), false);
+    int entregas_nao_terceirizadas = 0;
 
     for(int veiculoAtual = 1; veiculoAtual <= qtd_veiculos; veiculoAtual++){
-        // cout << "Construindo rota para o veículo " << veiculoAtual << endl;
         int capacidadeAtual = dados->get_Q();
         int atual = 0;
         
         while(capacidadeAtual > 0){
             
             int proximo = vizinhoMaisProximo(atual, &solucao_atual, dados, capacidadeAtual, clientes_atendidos);
-            int custo_proximo = dados->get_custo(atual, proximo);
-            int custo_terceirizacao = dados->get_custos_terceirizacao()[0];
 
+            // Se já verificamos que a quantidade mínima de entregas L foi atendida, passamos a comparar se vale a pena terceirizar ou não
+            if(entregas_nao_terceirizadas >= dados->get_L()){
+                int custo_proximo = dados->get_custo(atual, proximo);
+                int custo_terceirizacao = dados->get_custos_terceirizacao()[proximo-1];
+                // Se for melhor terceirizar, já terceirizamos
+                if(custo_terceirizacao > custo_proximo){
+                    solucao_atual.terceirizaCliente(proximo);
+                    solucao_atual.atualiza_custo(solucao_atual.get_custo() + custo_terceirizacao);
+                    clientes_atendidos[proximo - 1] = true;
+                    
+                    continue;
+                }
+            }
 
             if(proximo){
                 // Verifica se a capacidade não é excedida
-                // if (capacidadeAtual - solucao_atual.get_clientes()[proximo - 1]->get_demanda() >= 0){
-                // Verifica se a capacidade não é excedida
-                if (capacidadeAtual - dados->get_demandas()[proximo - 1] >= 0){
+                if(capacidadeAtual - dados->get_demandas()[proximo - 1] >= 0){
                     
-                    // solucao_atual.get_clientes()[proximo - 1]->set_atendido(true);
                     clientes_atendidos[proximo - 1] = true;
 
-                    // capacidadeAtual -= solucao_atual.get_clientes()[proximo -1]->get_demanda();
                     capacidadeAtual -= dados->get_demandas()[proximo - 1];
                 
                     // Ao inserir o cliente na rota já podemos calcular o custo dele aqui
                     // Pra não precisar iterar sobre todos os clientes e calcular esse custo dps
                     solucao_atual.pushBack(veiculoAtual-1, proximo);
+                    entregas_nao_terceirizadas+=1;
                     
                     solucao_atual.atualizaCapacidade(veiculoAtual-1, capacidadeAtual);
                     
@@ -45,11 +53,13 @@ Solucao CVRP::Construcao(Data *dados){
                     atual = proximo;
                 }
                 else{
-                    break;  // Se a capacidade for excedida, o veículo retorna ao depósito
+                    // Se a capacidade for excedida, o veículo retorna ao depósito
+                    break;
                 }
             }
             else{
-                break;  // Se não houver cliente próximo, o veículo retorna ao depósito
+                // Se não houver cliente próximo, o veículo retorna ao depósito
+                break;
             }
         }
 
@@ -60,6 +70,7 @@ Solucao CVRP::Construcao(Data *dados){
         // Se a rota do veiculo atual possui mais de um vértice nela (já começa com o 0 que é o depósito)
         if(solucao_atual.get_rotas()[veiculoAtual-1].size()>2)
             veiculo_usado++;
+
     }
 
     // Soma o custo de uso de um veiculo

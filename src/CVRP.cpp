@@ -115,8 +115,17 @@ void CVRP::gera_output(){
     outfile << "\n\n";
 
     // Rotas
-    outfile << this->melhor_solucao.get_rotas().size() << "\n";
+    int qtd_rotas = 0;
     for (int i = 0; i < this->melhor_solucao.get_rotas().size(); i++){
+        if(this->melhor_solucao.get_rotas()[i].size() > 2)
+            qtd_rotas+=1;
+    }
+
+    // Quantidade de rotas não vazias e seus clientes
+    outfile << qtd_rotas << "\n";
+    for (int i = 0; i < this->melhor_solucao.get_rotas().size(); i++){
+        if(this->melhor_solucao.get_rotas()[i].size() <=2)
+            continue;
         for (int j = 0; j < this->melhor_solucao.get_rotas()[i].size(); j++){
             outfile << this->melhor_solucao.get_rotas()[i][j] << " ";
         }

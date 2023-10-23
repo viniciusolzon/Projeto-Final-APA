@@ -7,48 +7,20 @@
 
 using namespace std;
 
-// n9k5_A = 428
-// n9k5_B = 506
-// n9k5_C = 559
-// n9k5_D = 408
-// n14k5_A = 471
-// n14k5_B = 565
-// n14k5_C = 569
-// n14k5_D = 471
-// n22k3_A = 605
-// n22k3_B = 777
-// n22k3_C = 777
-// n22k3_D = 605
-// n31k5_A = 650
-// n31k5_B = 933
-// n31k5_C = 939
-// n31k5_D = 656
-// n43k6_A = 801
-// n43k6_B = 1203
-// n43k6_C = 1208
-// n43k6_D = 802
-// n64k9_A = 934
-// n64k9_B = 1503
-// n64k9_C = 1510
-// n64k9_D = 932
-// n120k7_A = 1029
-// n120k7_B = 2052
-// n120k7_C = 2040
-// n120k7_D = 1046
-// n199k17_A = 1672
-// n199k17_B = 3302
-// n199k17_C = 3301
-// n199k17_D = 1672
-
 void gera_tabela(){
 
     // Todas instâncias.
     vector<string> instancias = {"n9k5_A", "n9k5_B", "n9k5_C", "n9k5_D",
                                 "n14k5_A", "n14k5_B", "n14k5_C", "n14k5_D",
-                                "n22k3_A", "n22k3_B", "n22k3_C", "n22k3_D"};
+                                "n22k3_A", "n22k3_B", "n22k3_C", "n22k3_D",
+                                "n31k5_A", "n31k5_B", "n31k5_C", "n31k5_D",
+                                "n43k6_A", "n43k6_B", "n43k6_C", "n43k6_D",
+                                "n64k9_A", "n64k9_B", "n64k9_C", "n64k9_D",
+                                "n120k7_A", "n120k7_B", "n120k7_C", "n120k7_D",
+                                "n199k17_A", "n199k17_B", "n199k17_C", "n199k17_D"};
 
     // Valores ótimos de cada instância.
-    vector<int> valores_otimos = {428,506,559,408,471,565,569,471,605,777,777,605};
+    vector<int> valores_otimos = {428,506,559,408,471,565,569,471,605,777,777,605,650,933,939,656,801,1203,1208,802,934,1503,1510,932,1029,2052,2040,1046,1672,3302,3301,1672};
 
     // Preparar o arquivo CSV onde os resultados serão salvos.
     std::ofstream arquivoCSV;
