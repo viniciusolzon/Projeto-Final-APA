@@ -25,6 +25,8 @@ class Solucao{
         int valorRVND;
         double tempoRVND;
 
+        double tempoILS;
+
         Solucao(int capacidades, vector<int> demandas, vector<int> custos_terceirizacao, int qtd_veiculos);
         Solucao(){}
         ~Solucao(){}

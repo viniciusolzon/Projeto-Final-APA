@@ -17,7 +17,10 @@ Solucao CVRP::Construcao(Data *dados){
         while(capacidadeAtual > 0){
             
             int proximo = vizinhoMaisProximo(atual, &solucao_atual, dados, capacidadeAtual, clientes_atendidos);
-            
+            int custo_proximo = dados->get_custo(atual, proximo);
+            int custo_terceirizacao = dados->get_custos_terceirizacao()[0];
+
+
             if(proximo){
                 // Verifica se a capacidade não é excedida
                 // if (capacidadeAtual - solucao_atual.get_clientes()[proximo - 1]->get_demanda() >= 0){

@@ -68,6 +68,7 @@ void CVRP::solveILS(){
     cout << "\nTempo de execucao:  " << float_ms.count() / 1000.0000000000000 << " segundos" << "\n";
 
     melhor_solucao = melhor_de_todas;
+    melhor_solucao.tempoILS = float_ms.count() / 1000.0000000000000;
     melhor_solucao.info();
 }
 
