@@ -33,12 +33,12 @@ class CVRP{
         void BuscaLocal(Solucao *s, Data *d);
 
         // Reisertion mesma rota
-        int calculaCustoReinsertion(Solucao *s, Data *d, int rota, int cliente, int posicao);
-        bool melhorouReinsertion(Solucao *s, Data *d);
+        int calculaCustoReinsertionIntra(Solucao *s, Data *d, int rota, int cliente, int posicao);
+        bool melhorouReinsertionIntra(Solucao *s, Data *d);
 
         // Reisertion rota diferente
-        // int calculaCustoReinsertion(Solucao *s, Data *d, int rota, int cliente, int posicao);
-        // bool melhorouReinsertion(Solucao *s, Data *d);
+        int calculaCustoReinsertionEntre(Solucao *s, Data *d, int rota_inicial, int rota_destino, int cliente, int posicao);
+        bool melhorouReinsertionEntre(Solucao *s, Data *d);
 
         // Swap
         int calculaCustoSwap(Solucao *s, Data *d, int rota, int cliente1, int cliente2);
