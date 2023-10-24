@@ -17,7 +17,6 @@ class Solucao{
         vector<int> capacidadeRotas; // vector que guarda a capacidade das rotas, vc pega pelo índice
         int num_veiculos_utilizados;
 
-        vector<int> clientes;
         int num_clientes;
         vector<int> clientes_terceirizados;
         int num_clientes_terceirizados;
@@ -48,11 +47,9 @@ class Solucao{
         void inverteRota(int rota, int inicio, int fim){reverse(this->rotas[rota].begin() + inicio, this->rotas[rota].begin() + fim + 1);}
 
         // Clientes
-        vector<int> get_clientes(){return clientes;}
         int get_num_clientes(){return num_clientes;}
-        void atualiza_num_clientes(int val){this->num_clientes = val;}
-        void adiciona_cliente(int cliente){this->clientes.push_back(cliente);}
-        void remove_cliente(int val){this->num_clientes = val;}
+        void mais_um_cliente(){this->num_clientes+=1;}
+        void menos_um_cliente(){this->num_clientes-=1;}
 
         // Clientes terceirizados
         vector<int> get_clientes_terceirizados(){return clientes_terceirizados;}

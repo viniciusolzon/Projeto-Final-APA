@@ -28,7 +28,7 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
             
         // APLICA N SWAPS ALEATÓRIOS
         // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) swaps aleatórios
-        // (n) é um número aleatório entre 1 e 3
+        // n = (rand() % (dados.get_n()/4)) + 1;
         n = (rand() % 3) + 1;
 
         for(int t = 0; t < n; t++){
@@ -79,9 +79,9 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
     if(qtd_rotas_nao_vazias >= 2){
         // APLICA N SHIFTS 1 ALEATÓRIOS
         // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) shifts 1 aleatórios
-        // (n) é um número aleatório entre 1 e 3
-
+        // n = (rand() % (dados.get_n()/4)) + 1;
         n = (rand() % 3) + 1;
+
         int rota_escolhida1 = 0;
         int rota_escolhida2 = 0;
         int tamanho_da_rota1 = 0;
@@ -165,12 +165,26 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
     }
 
 
-    // APLICA N TERCEIRZAÇÕES ALEATÓRIAS
+    // APLICA N TERCEIRIZAÇÕES ALEATÓRIAS
     // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) terceirizações aleatórios
-    // (n) é um número aleatório entre 1 e 3
+    // n = (rand() % (dados.get_n()/4)) + 1;
     n = (rand() % 3) + 1;
 
     for(int t = 0; t < n; t++){
+        
+        // Se não existe cliente pra ser terceirizado já abortamos essa perturbação
+        if(s_copy.get_num_clientes() == 0){
+            getchar();
+            break;
+        }
+        
+        // Antes de calcular o custo da terceirização do cliente, é preciso verificar
+        // se dá pra terceirizar respeitando o limite mínimo L de entregas não terceirizadas
+        bool limite_respeitado = false;
+        limite_respeitado = verificaLimiteL(&s_copy, d);
+        if(!limite_respeitado){
+            continue;
+        }
 
         // Escolha da rota aleatória
         while(true){
@@ -185,13 +199,6 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
         // Escolha do cliente aleatório
         i = std::max(1, rand() % tamanho_da_rota-1);
 
-        // Antes de calcular o custo da terceirização do cliente, é preciso verificar
-        // se dá pra terceirizar respeitando o limite mínimo L de entregas não terceirizadas
-        bool limite_respeitado = false;
-        limite_respeitado = verificaLimiteL(&s_copy, d);
-        if(!limite_respeitado){
-            continue;
-        }
         // Calcula o custo da terceirização aleatória
         custo = 0;
         custo = calculaCustoTerceirizacao(&s_copy, d, rota_escolhida, i);
@@ -208,6 +215,7 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
         s_copy.atualizaCapacidade(rota_escolhida, nova_capacidade_rota);
 
         s_copy.terceirizaCliente(cliente);
+        s_copy.menos_um_cliente();
 
         s_copy.removeDaRota(rota_escolhida, i);
         s_copy.atualiza_custo(s_copy.get_custo() + custo);
@@ -219,6 +227,12 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
         }
 
     }
+
+    // cout << "Depois da nova perturbacao:" << endl;
+    // s_copy.info();
+    // cout << "quantidade de clientes = " << s_copy.get_num_clientes() << endl;
+    // cout << "quantidade de clientes terceirizados = " << s_copy.get_num_clientesTerceirizados() << endl;
+    // getchar();
 
     return s_copy;
 }

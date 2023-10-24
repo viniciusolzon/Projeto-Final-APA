@@ -32,9 +32,13 @@ class CVRP{
         bool melhorou(double valor1, double valor2);
         void BuscaLocal(Solucao *s, Data *d);
 
-        // Reisertion
+        // Reisertion mesma rota
         int calculaCustoReinsertion(Solucao *s, Data *d, int rota, int cliente, int posicao);
         bool melhorouReinsertion(Solucao *s, Data *d);
+
+        // Reisertion rota diferente
+        // int calculaCustoReinsertion(Solucao *s, Data *d, int rota, int cliente, int posicao);
+        // bool melhorouReinsertion(Solucao *s, Data *d);
 
         // Swap
         int calculaCustoSwap(Solucao *s, Data *d, int rota, int cliente1, int cliente2);
@@ -60,6 +64,7 @@ class CVRP{
 
         // Funções para a perturbação
         Solucao Perturbacao(Solucao *s, Data *d); // A heurística construtiva utilizada será a do 'vizinho mais pŕoximo'
+
 
         void solve();
         void solveILS();

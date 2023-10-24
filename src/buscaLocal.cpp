@@ -403,16 +403,12 @@ bool CVRP::melhorou2opt(Solucao *s, Data *d){
 }
 
 
-
 // TERCEIRIZAÇÃO
 bool CVRP::verificaLimiteL(Solucao *s, Data *d){ // Verificado ta certo
 
     // A quantidade de clientes não terceirizados tem que ser maior do que o limite L
     // Tem q ser MAIOR pq se for igual ao terceirizar a qtd de clientes não terceirizados
     // vai ser menos do que o limite L
-    // cout << "Numero de clientes: " << d->get_n() << endl;
-    // cout << "Numero de clientes terceirizados: " << s->get_num_clientesTerceirizados() << endl;
-    // cout << "Quantidade minima de entregas nao terceirizadas: " << d->get_L() << endl;
     if(d->get_n() - s->get_num_clientesTerceirizados() > d->get_L()){
         // cout << "Da pra terceirizar" << endl;
         return true;
@@ -485,6 +481,7 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){ // Verificado ta certo
         s->atualizaCapacidade(melhor_rota, nova_capacidade_rota);
 
         s->terceirizaCliente(cliente);
+        s->menos_um_cliente();
 
         s->removeDaRota(melhor_rota, melhor_terceirizacao);
         s->atualiza_custo(s->get_custo() + melhor_custo);
@@ -598,6 +595,7 @@ bool CVRP::melhorouDesterceirizacao(Solucao *s, Data *d){ // Verificado ta certo
         s->atualizaCapacidade(melhor_rota, nova_capacidade_rota);
 
         s->desterceirizaCliente(index_melhor_cliente);
+        s->mais_um_cliente();
 
         // Se o segundo 'cliente' da rota iremos inserir for um zero, quer dizer que a rota está vazia,
         //  então aumentamos a quantidade de veiculos utilizados

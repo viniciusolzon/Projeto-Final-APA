@@ -42,25 +42,25 @@ void CVRP::solveILS(){
 
     for(int i = 0; i < maxIter; i++){
         
-        Solucao current = Construcao(&dados);
+        Solucao atual = Construcao(&dados);
 
-        Solucao best = current;
+        Solucao melhor = atual;
         if(i == 0)
-            melhor_de_todas = current;
+            melhor_de_todas = atual;
 
         int iterIls = 0;
         while(iterIls <= maxIterILS){
-            BuscaLocal(&current, &dados);
-            if(melhorou(best.get_custo(), current.get_custo())){
-                best = current;
+            BuscaLocal(&atual, &dados);
+            if(melhorou(melhor.get_custo(), atual.get_custo())){
+                melhor = atual;
                 iterIls = 0;
             }
-            current = Perturbacao(&best, &dados);
+            atual = Perturbacao(&melhor, &dados);
             iterIls++;
         }
-        if(melhorou(melhor_de_todas.get_custo(), best.get_custo()))
-            // cout << "Solucao melhorou de " << melhor_de_todas.get_custo() << " para " << best.get_custo() << endl;
-            melhor_de_todas = best;
+        if(melhorou(melhor_de_todas.get_custo(), melhor.get_custo()))
+            // cout << "Solucao melhorou de " << melhor_de_todas.get_custo() << " para " << melhor.get_custo() << endl;
+            melhor_de_todas = melhor;
     }
 
     auto end = std::chrono::high_resolution_clock::now(); // Para o cronômetro

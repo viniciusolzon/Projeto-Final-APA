@@ -43,7 +43,7 @@ void Solucao::removeDaRota(int rota, int index){
 
 void Solucao::info(){
 
-    cout << "\nCusto:  " << setprecision(2) << fixed << custo << endl;
+    cout << "\nCusto:  " << custo << endl;
 
     // Rotas
     for (int i = 0; i < this->rotas.size(); i++){

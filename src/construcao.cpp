@@ -43,6 +43,7 @@ Solucao CVRP::Construcao(Data *dados){
                     // Ao inserir o cliente na rota já podemos calcular o custo dele aqui
                     // Pra não precisar iterar sobre todos os clientes e calcular esse custo dps
                     solucao_atual.pushBack(veiculoAtual-1, proximo);
+                    solucao_atual.mais_um_cliente();
                     entregas_nao_terceirizadas+=1;
                     
                     solucao_atual.atualizaCapacidade(veiculoAtual-1, capacidadeAtual);
