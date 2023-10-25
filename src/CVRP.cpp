@@ -2,6 +2,25 @@
 #include <fstream>
 #include <map>
 
+void CVRP::calculaTudo(Solucao s){
+    int custo_total = 0;
+    // Rotas
+    for (int i = 0; i < s.get_rotas().size(); i++){
+        if(s.get_rotas()[i].size() >2)
+            custo_total+=dados.get_r();
+
+        for (int j = 0; j < s.get_rotas()[i].size()-1; j++){
+                custo_total+= dados.get_custo(s.get_rotas()[i][j], s.get_rotas()[i][j+1]);
+            }
+        }
+
+    for (int i = 0; i < s.get_clientes_terceirizados().size(); i++)
+        custo_total+= dados.get_custos_terceirizacao()[s.get_clientes_terceirizados()[i]-1];
+
+    cout << "\nCUSTO TOTAL RECALCULADO: " << custo_total << endl;
+    
+}
+
 void CVRP::solve(){
 
     srand(time(NULL)); // Para conseguir gerar números aleatórios
@@ -70,6 +89,7 @@ void CVRP::solveILS(){
     melhor_solucao = melhor_de_todas;
     melhor_solucao.tempoILS = float_ms.count() / 1000.0000000000000;
     melhor_solucao.info();
+    calculaTudo(melhor_solucao);
 }
 
 void CVRP::gera_output(){

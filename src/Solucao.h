@@ -64,10 +64,6 @@ class Solucao{
                 this->num_clientes_terceirizados-=1;
         }
 
-        // Veiculos utilizados
-        int get_num_veiculosUtilizados(){return num_veiculos_utilizados;}
-        void atualiza_num_clientesUtilizados(int val){this->num_veiculos_utilizados = val;}
-
         // Informações da solução
         void info();
 };

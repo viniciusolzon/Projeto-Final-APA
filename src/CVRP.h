@@ -38,6 +38,7 @@ class CVRP{
 
         // Reisertion rota diferente
         int calculaCustoReinsertionEntre(Solucao *s, Data *d, int rota_inicial, int rota_destino, int cliente, int posicao);
+        bool verificaCapacidadeRota(Solucao *s, Data *d, int rota, int cliente_entrando);
         bool melhorouReinsertionEntre(Solucao *s, Data *d);
 
         // Swap
@@ -69,7 +70,7 @@ class CVRP{
         void solve();
         void solveILS();
         void gera_output();
-        void gera_tabela();
+        void calculaTudo(Solucao s);
 };
 
 #endif

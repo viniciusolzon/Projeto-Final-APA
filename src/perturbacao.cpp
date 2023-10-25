@@ -28,7 +28,6 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
             
         // APLICA N SWAPS ALEATÓRIOS
         // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) swaps aleatórios
-        // n = (rand() % (dados.get_n()/4)) + 1;
         n = (rand() % 3) + 1;
 
         for(int t = 0; t < n; t++){
@@ -79,7 +78,6 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
     if(qtd_rotas_nao_vazias >= 2){
         // APLICA N SHIFTS 1 ALEATÓRIOS
         // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) shifts 1 aleatórios
-        // n = (rand() % (dados.get_n()/4)) + 1;
         n = (rand() % 3) + 1;
 
         int rota_escolhida1 = 0;
@@ -167,7 +165,6 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
 
     // APLICA N TERCEIRIZAÇÕES ALEATÓRIAS
     // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) terceirizações aleatórios
-    // n = (rand() % (dados.get_n()/4)) + 1;
     n = (rand() % 3) + 1;
 
     for(int t = 0; t < n; t++){

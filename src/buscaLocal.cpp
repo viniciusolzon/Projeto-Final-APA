@@ -10,7 +10,7 @@ bool CVRP::melhorou(double valor1, double valor2){
 }
 
 // REINSERTION INTRA ROTA
-int CVRP::calculaCustoReinsertionIntra(Solucao *s, Data *d, int rota, int cliente, int posicao){
+int CVRP::calculaCustoReinsertionIntra(Solucao *s, Data *d, int rota, int cliente, int posicao){ // Verificado ta certo
     int antes = 0, depois = 0, custo = 0;
 
     if(posicao == cliente + 1){
@@ -37,7 +37,7 @@ int CVRP::calculaCustoReinsertionIntra(Solucao *s, Data *d, int rota, int client
     return custo;
 }
 
-bool CVRP::melhorouReinsertionIntra(Solucao *s, Data *d){
+bool CVRP::melhorouReinsertionIntra(Solucao *s, Data *d){ // Verificado ta certo
 
     int qtd_rotas = s->get_rotas().size();
     int tamanho_da_rota = 0;
@@ -108,7 +108,20 @@ bool CVRP::melhorouReinsertionIntra(Solucao *s, Data *d){
 
 
 // REINSERTION ENTRE ROTAS
-int CVRP::calculaCustoReinsertionEntre(Solucao *s, Data *d, int rota_inicial, int rota_destino, int cliente, int posicao){
+bool CVRP::verificaCapacidadeRota(Solucao *s, Data *d, int rota, int cliente_entrando){ // Verificado ta certo
+    int capacidade = s->get_capacidadeRota(rota);
+    int demanda = d->get_demandas()[cliente_entrando-1];
+
+    // Tira o cliente da rota dele e coloca na outra rota e verifica se a capacidade não será excedida
+    if((capacidade - demanda) < 0){
+        // Não dá pra aplicar o reinsertion
+        return true;
+    }
+    
+    // Dá pra aplicar o reinsertion
+    return false;
+}
+int CVRP::calculaCustoReinsertionEntre(Solucao *s, Data *d, int rota_inicial, int rota_destino, int cliente, int posicao){ // Verificado ta certo
     int antes = 0, depois = 0, custo = 0;
 
     antes = d->get_custo(s->get_rotas()[rota_inicial][cliente-1], s->get_rotas()[rota_inicial][cliente]);
@@ -122,13 +135,14 @@ int CVRP::calculaCustoReinsertionEntre(Solucao *s, Data *d, int rota_inicial, in
     custo = depois - antes;
     return custo;
 }
-bool CVRP::melhorouReinsertionEntre(Solucao *s, Data *d){
+bool CVRP::melhorouReinsertionEntre(Solucao *s, Data *d){ // Verificado ta certo
 
     int qtd_rotas = s->get_rotas().size();
 
     int melhor_custo = 0;
     int custo = 0;
-    int melhor_cliente1, melhor_cliente2;
+    int melhor_cliente;
+    int melhor_posicao;
     int melhor_rota1, melhor_rota2;
     bool capacidade_excedida = false;
     bool houve_melhora = false;
@@ -136,67 +150,77 @@ bool CVRP::melhorouReinsertionEntre(Solucao *s, Data *d){
     // Passamos por todas as rotas pra tentar o shift
     for(int rota1_escolhida = 0; rota1_escolhida < qtd_rotas-1; rota1_escolhida++){
 
-        for(int rota2_escolhida = rota1_escolhida + 1; rota2_escolhida < qtd_rotas; rota2_escolhida++){
+        for(int rota2_escolhida = 0; rota2_escolhida < qtd_rotas; rota2_escolhida++){
 
-            // Testa o shift com todos os clientes da rota1 com todos os clientes da rota2
+            if(rota1_escolhida==rota2_escolhida){
+                continue;
+            }
+
+            // Testa o reinsertion com todos os clientes da rota1 entre todos os clientes da rota2
             for(int i = 1; i < s->get_rotas()[rota1_escolhida].size() - 1; i++){
                 
-                for(int j = 1; j < s->get_rotas()[rota2_escolhida].size() - 1; j++){
+                for(int j = 0; j < s->get_rotas()[rota2_escolhida].size() - 1; j++){
                     // Antes de ver se vale a pena trocar os clientes entre rotas, é preciso primeiro
                     // verificar se a capacidade de nenhuma das rota será excedida ao trocar os clientes
-                    capacidade_excedida = verificaCapacidadeRotas(s, d, rota1_escolhida, rota2_escolhida, i, j);
-                    // Se a capacidade de alguma das rotas for excedida, tentamos trocar outra troca entre clientes
+                    int cliente_entrando = s->get_rotas()[rota1_escolhida][i];
+                    capacidade_excedida = verificaCapacidadeRota(s, d, rota2_escolhida, cliente_entrando);
+                    // Se a capacidade de alguma da rota que for receber o cliente for excedida
+                    // tentamos colocar esse cliente em outro lugar
                     if(capacidade_excedida){
                         continue;
                     }
 
                     // Se não, verificamos se vale a pena trocar eles baseado no custo das rotas
-                    custo = calculaCustoShift(s, d, rota1_escolhida, rota2_escolhida, i, j);
+                    custo = calculaCustoReinsertionEntre(s, d, rota1_escolhida, rota2_escolhida, i, j);
                     if(melhorou(melhor_custo, custo)){
                         melhor_custo = custo;
                         melhor_rota1 = rota1_escolhida;
                         melhor_rota2 = rota2_escolhida;
-                        melhor_cliente1 = i;
-                        melhor_cliente2 = j;
+                        melhor_cliente = i;
+                        melhor_posicao = j;
                     }
                 }
             }
         }
     }
 
-    // Se o shift melhora a solucao, aplicamos o movimento na solucao atual
+    // Se o reinsertion melhora a solucao, aplicamos o movimento na solucao atual
     if(melhor_custo < 0){
+        
+        int aux = s->get_rotas()[melhor_rota1][melhor_cliente];
+        // Tira o cliente da sua rota original
+        s->removeDaRota(melhor_rota1, melhor_cliente);
+        // Se o segundo elemento da rota que retiramos o cliente for um zero quer dizer que ela está vazia agora
+        // então diminuimos o custo da quantidade de veiculos utilizados
+        if(s->get_rotas()[melhor_rota1][1] == 0){
+            s->atualiza_custo(s->get_custo() - d->get_r());
+        }
 
-        int cliente1 = s->get_rotas()[melhor_rota1][melhor_cliente1];
-        int cliente2 = s->get_rotas()[melhor_rota2][melhor_cliente2];
-        // int demanda_cliente1 = s->get_clientes()[cliente1-1]->get_demanda();
-        int demanda_cliente1 = d->get_demandas()[cliente1-1];
-        // int demanda_cliente2 = s->get_clientes()[cliente2-1]->get_demanda();
-        int demanda_cliente2 = d->get_demandas()[cliente2-1];
-        int capacidade_rota1 = s->get_capacidadeRota(melhor_rota1);
-        int capacidade_rota2 = s->get_capacidadeRota(melhor_rota2);
-        // retirar o cliente 1 da rota 1 e colocar o 2 no lugar dele
-        int nova_capacidade_rota1 = capacidade_rota1 + demanda_cliente1 - demanda_cliente2;
-        // retirar o cliente 2 da rota 2 e colocar o 1 no lugar dele
-        int nova_capacidade_rota2 = capacidade_rota2 + demanda_cliente2 - demanda_cliente1;
+        // Se o segundo elemento da rota que inserimos o cliente era um zero quer dizer que ela estava vazia antes
+        // então auemntamos o custo da quantidade de veiculos utilizados
+        if(s->get_rotas()[melhor_rota2][1] == 0){
+            s->atualiza_custo(s->get_custo() + d->get_r());
+        }
+        // Insere na outra rota
+        s->insereNaRota(melhor_rota2, melhor_posicao, aux);
 
-        // atualiza a capacidade das 2 rotas após a alteração
+        // Atualiza a capacidade de ambas as rotas
+        int nova_capacidade_rota1 = s->get_capacidadeRota(melhor_rota1) + d->get_demandas()[aux-1];
+        int nova_capacidade_rota2 = s->get_capacidadeRota(melhor_rota2) - d->get_demandas()[aux-1];
         s->atualizaCapacidade(melhor_rota1, nova_capacidade_rota1);
         s->atualizaCapacidade(melhor_rota2, nova_capacidade_rota2);
 
-        int aux = s->get_rotas()[melhor_rota1][melhor_cliente1];
-        s->atualizaRota(melhor_rota1, melhor_cliente1, s->get_rotas()[melhor_rota2][melhor_cliente2]);
-        s->atualizaRota(melhor_rota2, melhor_cliente2, aux);
         s->atualiza_custo(s->get_custo() + melhor_custo);
 
         houve_melhora = true;
+
     }
 
     if(houve_melhora){
-        // cout << "Houve melhora no shift" << endl;
+        // cout << "Houve melhora no reinsertion entre rotas" << endl;
     }
     else{
-        // cout << "Nao houve melhora no shift" << endl;
+        // cout << "Nao houve melhora no reinsertion entre rotas" << endl;
     }
 
     return houve_melhora;
@@ -207,7 +231,6 @@ bool CVRP::melhorouReinsertionEntre(Solucao *s, Data *d){
 int CVRP::calculaCustoSwap(Solucao *s, Data *d, int rota, int cliente1, int cliente2){
     int antes = 0, depois = 0, custo = 0;
 
-    // cout << "Verificando swap do cliente " << s->get_rotas()[rota][cliente1] << " com o cliente " << s->get_rotas()[rota][cliente2] << endl;
     // Para a perturbação, pode pegar um i maior que o j lá
     if(cliente1 == cliente2 + 1){
         antes = d->get_custo(s->get_rotas()[rota][cliente2-1], s->get_rotas()[rota][cliente2]);
@@ -271,14 +294,6 @@ bool CVRP::melhorouSwap(Solucao *s, Data *d){
             for(int j = i + 1; j < s->get_rotas()[rota_escolhida].size() - 1; j++){
                 custo = calculaCustoSwap(s, d, rota_escolhida, i, j);
 
-                int teste = calculaCustoSwap(s, d, rota_escolhida, j, i);
-                if(teste != custo){
-                    cout << "CUSTOS DIFEREM DO SWAP ENTRE (i,j) E (j,i)" << endl;
-                    cout << "Custo de swap entre i e j: " << custo << endl;
-                    cout << "Custo de swap entre j e i: " << teste << endl;
-                    getchar();
-                }
-
                 if(melhorou(melhor_custo, custo)){
                     melhor_custo = custo;
                     melhor_rota = rota_escolhida;
@@ -336,9 +351,7 @@ bool CVRP::verificaCapacidadeRotas(Solucao *s, Data *d, int rota1, int rota2, in
 
     cliente1 = s->get_rotas()[rota1][cliente1];
     cliente2 = s->get_rotas()[rota2][cliente2];
-    // int demanda1 = s->get_clientes()[cliente1-1]->get_demanda();
     int demanda1 = d->get_demandas()[cliente1-1];
-    // int demanda2 = s->get_clientes()[cliente2-1]->get_demanda();
     int demanda2 = d->get_demandas()[cliente2-1];
 
     // Tira o cliente da rota dele e coloca o outro cliente da outra rota e verifica se a capacidade n será excedida
@@ -402,9 +415,7 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
 
         int cliente1 = s->get_rotas()[melhor_rota1][melhor_cliente1];
         int cliente2 = s->get_rotas()[melhor_rota2][melhor_cliente2];
-        // int demanda_cliente1 = s->get_clientes()[cliente1-1]->get_demanda();
         int demanda_cliente1 = d->get_demandas()[cliente1-1];
-        // int demanda_cliente2 = s->get_clientes()[cliente2-1]->get_demanda();
         int demanda_cliente2 = d->get_demandas()[cliente2-1];
         int capacidade_rota1 = s->get_capacidadeRota(melhor_rota1);
         int capacidade_rota2 = s->get_capacidadeRota(melhor_rota2);
@@ -437,7 +448,7 @@ bool CVRP::melhorouShift(Solucao *s, Data *d){
 
 
 // 2-OPT
-int CVRP::calculaCusto2opt(Solucao *s, Data *d, int rota, int cliente1, int cliente2){
+int CVRP::calculaCusto2opt(Solucao *s, Data *d, int rota, int cliente1, int cliente2){ // Verificado ta certo
     int antes = 0, depois = 0, custo = 0;
 
     antes = d->get_custo(s->get_rotas()[rota][cliente1-1], s->get_rotas()[rota][cliente1]);
@@ -450,7 +461,7 @@ int CVRP::calculaCusto2opt(Solucao *s, Data *d, int rota, int cliente1, int clie
     return custo;
 }
 
-bool CVRP::melhorou2opt(Solucao *s, Data *d){
+bool CVRP::melhorou2opt(Solucao *s, Data *d){ // Verificado ta certo
     int qtd_rotas = s->get_rotas().size();
     int tamanho_da_rota = 0;
     int melhor_rota;
@@ -482,10 +493,11 @@ bool CVRP::melhorou2opt(Solucao *s, Data *d){
     }
 
     if(melhor_custo < 0){
-        // reverse(s->sequence.begin() + melhor_i, s->sequence.begin() + melhor_j + 1);
+
         s->inverteRota(melhor_rota, melhor_i, melhor_j);
 
         s->atualiza_custo(s->get_custo() + melhor_custo);
+
         houve_melhora = true;
     }
 
@@ -506,11 +518,11 @@ bool CVRP::verificaLimiteL(Solucao *s, Data *d){ // Verificado ta certo
     // Tem q ser MAIOR pq se for igual ao terceirizar a qtd de clientes não terceirizados
     // vai ser menos do que o limite L
     if(d->get_n() - s->get_num_clientesTerceirizados() > d->get_L()){
-        // cout << "Da pra terceirizar" << endl;
+        // Da pra terceirizar
         return true;
     }
     
-    // cout << "Nao da pra terceirizar" << endl;
+    // Nao da pra terceirizar
     return false;
 }
 
@@ -566,7 +578,6 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){ // Verificado ta certo
     if(melhor_custo < 0){
 
         int cliente = s->get_rotas()[melhor_rota][melhor_terceirizacao];
-        // int demanda_cliente = s->get_clientes()[cliente-1]->get_demanda();
         int demanda_cliente = d->get_demandas()[cliente-1];
         int capacidade_rota = s->get_capacidadeRota(melhor_rota);
         // retirar o cliente da rota 
@@ -583,7 +594,7 @@ bool CVRP::melhorouTerceirizacao(Solucao *s, Data *d){ // Verificado ta certo
         s->atualiza_custo(s->get_custo() + melhor_custo);
 
         // Se o segundo 'cliente' da rota agora for um zero, quer dizer que a rota está vazia,
-        // então diminuimos a quantidade de veiculos utilizados
+        // então diminuimos o custo da quantidade de veiculos utilizados
         if(s->get_rotas()[melhor_rota][1] == 0){
             s->atualiza_custo(s->get_custo() - d->get_r());
         }
@@ -681,7 +692,6 @@ bool CVRP::melhorouDesterceirizacao(Solucao *s, Data *d){ // Verificado ta certo
     // Se desterceirizar algum cliente na rota atual é melhor para a solucao, já desterceirizamos aquele cliente
     if(melhor_custo < 0){
 
-        // int demanda_cliente = s->get_clientes()[melhor_cliente-1]->get_demanda();
         int demanda_cliente = d->get_demandas()[melhor_cliente-1];
         int capacidade_rota = s->get_capacidadeRota(melhor_rota);
         // retirar o cliente da rota 
@@ -719,7 +729,7 @@ bool CVRP::melhorouDesterceirizacao(Solucao *s, Data *d){ // Verificado ta certo
 
 // RVND (Random Variable Neighbourhood Descent, escolhe as estruturas de vizinhança de forma aleatória)
 void CVRP::BuscaLocal(Solucao *s, Data *d){
-    vector<int> NL = {1, 2, 3, 4, 5, 6, 7}; // alterar a estrutura de dados para maior eficiência
+    vector<int> NL = {1, 2, 3, 4, 5, 6, 7};
     bool improved = false;
     while(!NL.empty()){
         int n = rand() % NL.size();
@@ -728,7 +738,8 @@ void CVRP::BuscaLocal(Solucao *s, Data *d){
                 improved = melhorouReinsertionIntra(s, d);
                 break;
             case 2:
-                improved = melhorouReinsertionEntre(s, d);
+                improved = false;
+                // improved = melhorouReinsertionEntre(s, d);
                 break;
             case 3:
                 improved = melhorouSwap(s, d);
@@ -737,6 +748,7 @@ void CVRP::BuscaLocal(Solucao *s, Data *d){
                 improved = melhorouShift(s, d);
                 break;
             case 5:
+                // improved = false;
                 improved = melhorou2opt(s, d);
                 break;
             case 6:
