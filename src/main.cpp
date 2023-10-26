@@ -16,11 +16,11 @@ void gera_tabela(){
                                 "n31k5_A", "n31k5_B", "n31k5_C", "n31k5_D",
                                 "n43k6_A", "n43k6_B", "n43k6_C", "n43k6_D",
                                 "n64k9_A", "n64k9_B", "n64k9_C", "n64k9_D",
-                                "n120k7_A", "n120k7_B", "n120k7_C", "n120k7_D"};
+                                "n120k7_A", "n120k7_B", "n120k7_C", "n120k7_D",
+                                "n199k17_A", "n199k17_B", "n199k17_C", "n199k17_D"};
     
-
     // Valores ótimos de cada instância.
-    vector<int> valores_otimos = {428,506,559,408,471,565,569,471,605,777,777,605,650,933,939,656,801,1203,1208,802,934,1503,1510,932,1029,2052,2040,1046};
+    vector<int> valores_otimos = {428,506,559,408,471,565,569,471,605,777,777,605,650,933,939,656,801,1203,1208,802,934,1503,1510,932,1029,2052,2040,1046,1672,3302,3301,1672};
 
     // Preparar o arquivo CSV onde os resultados serão salvos.
     std::ofstream arquivoCSV;
