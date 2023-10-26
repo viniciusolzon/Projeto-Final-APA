@@ -16,8 +16,8 @@ class CVRP{
         // Construtor da classe
         CVRP(Data dados){
             this->dados = dados;
-            this->maxIter = 50;
-            this->maxIterILS = dados.get_n() >= 150 ? dados.get_n() / 2 : dados.get_n();
+            this->maxIter = 10;
+            this->maxIterILS = 10;
         }
         ~CVRP(){} // Destrutor da classe
 
