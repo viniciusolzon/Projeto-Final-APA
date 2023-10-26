@@ -132,6 +132,7 @@ int main(int argc, char *argv[]){
 
         CVRP problema(dados);
         problema.solveILS();
+        problema.gera_output();
     }
 
 }

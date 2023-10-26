@@ -9,6 +9,7 @@ bool CVRP::melhorou(double valor1, double valor2){
     return (valor1 - valor2) > epsilon(valor1, valor2);
 }
 
+
 // REINSERTION INTRA ROTA
 int CVRP::calculaCustoReinsertionIntra(Solucao *s, Data *d, int rota, int cliente, int posicao){ // Verificado ta certo
     int antes = 0, depois = 0, custo = 0;
@@ -748,7 +749,6 @@ void CVRP::BuscaLocal(Solucao *s, Data *d){
                 improved = melhorouShift(s, d);
                 break;
             case 5:
-                // improved = false;
                 improved = melhorou2opt(s, d);
                 break;
             case 6:

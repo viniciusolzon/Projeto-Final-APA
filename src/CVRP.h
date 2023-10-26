@@ -64,7 +64,7 @@ class CVRP{
         bool melhorouDesterceirizacao(Solucao *s, Data *d);
 
         // Funções para a perturbação
-        Solucao Perturbacao(Solucao *s, Data *d); // A heurística construtiva utilizada será a do 'vizinho mais pŕoximo'
+        Solucao Perturbacao(Solucao *s, Data *d);
 
 
         void solve();

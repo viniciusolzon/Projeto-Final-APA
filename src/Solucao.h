@@ -2,11 +2,9 @@
 #define SOLUCAO_H
 
 #include <vector>
-#include <limits>
 #include <iostream>
 #include <algorithm>
 #include <iomanip>
-#include <cmath>
 
 using namespace std;
 

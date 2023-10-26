@@ -68,10 +68,4 @@ void Solucao::info(){
         cout << "\n";
     }
 
-    // if(this->num_clientes_terceirizados + this->num_clientes == dados->get_n()){
-    //     cout << "Todos clientes foram atendidos\n\n";
-    // }
-    // else{
-    //     cout << "Nem todos clientes foram atendidos\n\n";
-    // }
 }

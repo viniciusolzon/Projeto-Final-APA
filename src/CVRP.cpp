@@ -1,15 +1,13 @@
 #include "CVRP.h"
 #include <fstream>
-#include <map>
 
 void CVRP::calculaTudo(Solucao s){
     int custo_total = 0;
-    // Rotas
-    for (int i = 0; i < s.get_rotas().size(); i++){
+    for(int i = 0; i < s.get_rotas().size(); i++){
         if(s.get_rotas()[i].size() >2)
             custo_total+=dados.get_r();
 
-        for (int j = 0; j < s.get_rotas()[i].size()-1; j++){
+        for(int j = 0; j < s.get_rotas()[i].size()-1; j++){
                 custo_total+= dados.get_custo(s.get_rotas()[i][j], s.get_rotas()[i][j+1]);
             }
         }
@@ -17,8 +15,12 @@ void CVRP::calculaTudo(Solucao s){
     for (int i = 0; i < s.get_clientes_terceirizados().size(); i++)
         custo_total+= dados.get_custos_terceirizacao()[s.get_clientes_terceirizados()[i]-1];
 
+    if(s.get_num_clientes() + s.get_num_clientesTerceirizados() != dados.get_n()){
+        cout << "Nem todos clientes foram atendidos" << endl;
+    }
+
     cout << "\nCUSTO TOTAL RECALCULADO: " << custo_total << endl;
-    
+
 }
 
 void CVRP::solve(){
@@ -144,12 +146,12 @@ void CVRP::gera_output(){
     // Quantidade de rotas não vazias e seus clientes
     outfile << qtd_rotas << "\n";
     for (int i = 0; i < this->melhor_solucao.get_rotas().size(); i++){
-        if(this->melhor_solucao.get_rotas()[i].size() <=2)
-            continue;
-        for (int j = 0; j < this->melhor_solucao.get_rotas()[i].size(); j++){
-            outfile << this->melhor_solucao.get_rotas()[i][j] << " ";
+        if(this->melhor_solucao.get_rotas()[i].size() >2){
+            for (int j = 0; j < this->melhor_solucao.get_rotas()[i].size(); j++){
+                outfile << this->melhor_solucao.get_rotas()[i][j] << " ";
+            }
+        outfile << "\n";
         }
-    outfile << "\n";
     }
 
     outfile.close();

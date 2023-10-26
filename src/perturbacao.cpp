@@ -225,11 +225,5 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
 
     }
 
-    // cout << "Depois da nova perturbacao:" << endl;
-    // s_copy.info();
-    // cout << "quantidade de clientes = " << s_copy.get_num_clientes() << endl;
-    // cout << "quantidade de clientes terceirizados = " << s_copy.get_num_clientesTerceirizados() << endl;
-    // getchar();
-
     return s_copy;
 }

@@ -27,7 +27,6 @@ Solucao CVRP::Construcao(Data *dados){
                     solucao_atual.terceirizaCliente(proximo);
                     solucao_atual.atualiza_custo(solucao_atual.get_custo() + custo_terceirizacao);
                     clientes_atendidos[proximo - 1] = true;
-                    
                     continue;
                 }
             }

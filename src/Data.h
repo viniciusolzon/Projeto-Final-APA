@@ -30,7 +30,6 @@ class Data{
         int get_r(){return r;} // Custo de uso de cada veículo
         vector<int> get_demandas(){return demandas;}
         vector<int> get_custos_terceirizacao(){return custos_terceirizacao;}
-        int **get_matrizAdj(){return matrizAdj;}
         int get_custo(int i, int j){return matrizAdj[i][j];}
         
         void readData(string filename);
