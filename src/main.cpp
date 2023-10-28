@@ -121,7 +121,7 @@ int main(int argc, char *argv[]){
 
         CVRP problema(dados);
         problema.solve();
-        problema.gera_output();
+        // problema.gera_output();
     }
 
     // Roda a instância selecionada com a heurística construtita, com o RVND e com a perturbação aplicados ao ILS
@@ -132,7 +132,7 @@ int main(int argc, char *argv[]){
 
         CVRP problema(dados);
         problema.solveILS();
-        problema.gera_output();
+        // problema.gera_output();
     }
 
 }
