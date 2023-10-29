@@ -9,7 +9,7 @@ using namespace std;
 
 void gera_tabela(){
 
-    // Todas instâncias.
+    // Todas as instâncias.
     vector<string> instancias = {"n9k5_A", "n9k5_B", "n9k5_C", "n9k5_D",
                                 "n14k5_A", "n14k5_B", "n14k5_C", "n14k5_D",
                                 "n22k3_A", "n22k3_B", "n22k3_C", "n22k3_D",
