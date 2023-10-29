@@ -24,7 +24,7 @@ class CVRP{
         Solucao get_solution(){return melhor_solucao;}
 
         // Funções para a construção
-        Solucao Construcao(Data *d); // A heurística construtiva utilizada será a do 'vizinho mais pŕoximo'
+        Solucao Construcao(Data *d); // A heurística construtiva utilizada será a do 'vizinho mais próximo'
         int vizinhoMaisProximo(int atual, Solucao *solucao, Data *d, int capacidadeAtual, vector<bool> clientes_atendidos);
 
         // Funções para a busca local

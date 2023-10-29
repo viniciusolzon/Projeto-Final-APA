@@ -34,7 +34,7 @@ class Data{
         
         void readData(string filename);
         void info();
-        
+
 };
 
 #endif

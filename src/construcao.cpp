@@ -18,20 +18,21 @@ Solucao CVRP::Construcao(Data *dados){
             
             int proximo = vizinhoMaisProximo(atual, &solucao_atual, dados, capacidadeAtual, clientes_atendidos);
 
-            // Se já verificamos que a quantidade mínima de entregas L foi atendida, passamos a comparar se vale a pena terceirizar ou não
-            if(entregas_nao_terceirizadas >= dados->get_L()){
-                int custo_proximo = dados->get_custo(atual, proximo);
-                int custo_terceirizacao = dados->get_custos_terceirizacao()[proximo-1];
-                // Se for melhor terceirizar, já terceirizamos
-                if(custo_terceirizacao > custo_proximo){
-                    solucao_atual.terceirizaCliente(proximo);
-                    solucao_atual.atualiza_custo(solucao_atual.get_custo() + custo_terceirizacao);
-                    clientes_atendidos[proximo - 1] = true;
-                    continue;
-                }
-            }
-
             if(proximo){
+
+                // Se já verificamos que a quantidade mínima de entregas L foi atendida, passamos a comparar se vale a pena terceirizar ou não
+                if(entregas_nao_terceirizadas >= dados->get_L()){
+                    int custo_proximo = dados->get_custo(atual, proximo);
+                    int custo_terceirizacao = dados->get_custos_terceirizacao()[proximo-1];
+                    // Se for melhor terceirizar, já terceirizamos
+                    if(custo_terceirizacao < custo_proximo){
+                        solucao_atual.terceirizaCliente(proximo);
+                        solucao_atual.atualiza_custo(solucao_atual.get_custo() + custo_terceirizacao);
+                        clientes_atendidos[proximo - 1] = true;
+                        continue;
+                    }
+                }
+
                 // Verifica se a capacidade não é excedida
                 if(capacidadeAtual - dados->get_demandas()[proximo - 1] >= 0){
                     

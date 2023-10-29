@@ -12,7 +12,7 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
     int i = 0;
     int j = 0;
     int n = 0;
-    
+
     // Primeiro precisa verificar se tem 2 clientes não terceirizados em uma rota só pra aplicar o swap aleatório
     bool viavel = false;
     for(int rota = 0; rota < s_copy.get_rotas().size(); rota++){
@@ -22,10 +22,9 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
         if(tamanho_da_rota >= 4)
             viavel = true;
     }
-
     
     if(viavel){
-            
+
         // APLICA N SWAPS ALEATÓRIOS
         // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) swaps aleatórios
         n = (rand() % 3) + 1;
@@ -37,7 +36,6 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
                 rota_escolhida = rand() % qtd_rotas;
                 tamanho_da_rota = s_copy.get_rotas()[rota_escolhida].size();
                 
-
                 // Pra aplicar o swap a rota precisa ter no mínimo 2 clientes, (4 pq tem a ida e volta do depósito)
                 if(tamanho_da_rota >= 4)
                     break;
@@ -76,7 +74,7 @@ Solucao CVRP::Perturbacao(Solucao *s, Data *d){
     }
 
     if(qtd_rotas_nao_vazias >= 2){
-        // APLICA N SHIFTS 1 ALEATÓRIOS
+        // APLICA N SHIFTS ALEATÓRIOS
         // Escolhe uma rota aleatoŕia não vazia pra aplicar uma sequência de (n) shifts 1 aleatórios
         n = (rand() % 3) + 1;
 

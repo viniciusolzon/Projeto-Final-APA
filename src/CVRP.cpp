@@ -4,7 +4,7 @@
 void CVRP::calculaTudo(Solucao s){
     int custo_total = 0;
     for(int i = 0; i < s.get_rotas().size(); i++){
-        if(s.get_rotas()[i].size() >2)
+        if(s.get_rotas()[i].size() > 2)
             custo_total+=dados.get_r();
 
         for(int j = 0; j < s.get_rotas()[i].size()-1; j++){
@@ -57,6 +57,7 @@ void CVRP::solve(){
 
 
 void CVRP::solveILS(){
+    
     auto start = std::chrono::high_resolution_clock::now(); // Inicia o cronômetro
     srand(time(NULL)); // Para conseguir gerar números aleatórios
     Solucao melhor_de_todas(dados.get_Q(), dados.get_demandas(), dados.get_custos_terceirizacao(), dados.get_k()); // Cria a solução que guardará a melhor solução possível

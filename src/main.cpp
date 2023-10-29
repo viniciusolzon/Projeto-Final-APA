@@ -109,7 +109,6 @@ int main(int argc, char *argv[]){
         return 0;
     }
 
-
     // Roda todas as instâncias listadas e cria a tabela com as informações obre cada instância rodada
     if(argc == 1) // ./cvrp
         gera_tabela();
@@ -124,7 +123,7 @@ int main(int argc, char *argv[]){
         // problema.gera_output();
     }
 
-    // Roda a instância selecionada com a heurística construtita, com o RVND e com a perturbação aplicados ao ILS
+    // Roda a instância selecionada com a heurística construtiva, com o RVND e com a perturbação aplicados ao ILS
     // e gera o output dessa instância
     if(argc == 3){ // ./cvrp instances/instancia_desejada ils
         Data dados;

@@ -67,5 +67,4 @@ void Solucao::info(){
             cout << this->clientes_terceirizados[i] << " ";
         cout << "\n";
     }
-
 }

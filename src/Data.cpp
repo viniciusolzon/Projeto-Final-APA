@@ -1,6 +1,7 @@
 #include "Data.h"
 
 void Data::readData(string filename){
+    
     string nomeArquivo = filename; // Nome do arquivo de entrada
     
     this->nome_instancia = nomeArquivo;

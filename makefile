@@ -11,9 +11,6 @@ CONCERTINCDIR = $(CONCERTDIR)/include
 CCFLAGS = $(CCOPT)
 #############################
 
-#### flags do linker
-#############################
-
 #### diretorios com os source files e com os objs files
 SRCDIR = src
 OBJDIR = obj

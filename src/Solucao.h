@@ -44,7 +44,7 @@ class Solucao{
         void removeDaRota(int rota, int index);
         void inverteRota(int rota, int inicio, int fim){reverse(this->rotas[rota].begin() + inicio, this->rotas[rota].begin() + fim + 1);}
 
-        // Clientes
+        // Clientes atendidos
         int get_num_clientes(){return num_clientes;}
         void mais_um_cliente(){this->num_clientes+=1;}
         void menos_um_cliente(){this->num_clientes-=1;}
