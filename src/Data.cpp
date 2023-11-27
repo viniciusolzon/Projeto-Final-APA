@@ -1,5 +1,38 @@
 #include "Data.h"
 
+int Data::get_n(){
+    return n;
+}
+
+int Data::get_k(){
+    return k;
+}
+
+int Data::get_Q(){
+    return Q;
+}
+
+int Data::get_L(){
+    return L;
+}
+
+int Data::get_r(){
+    return r;
+}
+
+vector<int> Data::get_demandas(){
+    return demandas;
+}
+
+vector<int> Data::get_custos_terceirizacao(){
+    return custos_terceirizacao;
+}
+
+int Data::get_custo(int i, int j){
+    return matrizAdj[i][j];
+}
+
+
 void Data::readData(string filename){
     
     string nomeArquivo = filename; // Nome do arquivo de entrada
